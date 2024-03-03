@@ -1,4 +1,5 @@
 package es.uca.dss.ParkControl;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class CalculadoraTest {

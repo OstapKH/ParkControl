@@ -1,9 +1,9 @@
-import es.uca.dss.ParkControl.Calculadora;
+package es.uca.dss.ParkControl;
 
 public class CalculadoraFake implements Calculadora
 {
     public int sumar(int a, int b)
     {
-        return 0;
+        return a+b;
     }    
 }
