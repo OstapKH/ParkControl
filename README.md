@@ -1,5 +1,5 @@
 # dss2023-2024-ParkControl
-## Respositorio del Proyecto ParkControl, de la asignatura DSS
+## Repositorio del Proyecto ParkControl, de la asignatura DSS
 ### Participantes
 - Marcos Jiménez Sánchez
 - Ostap Kilbasovych
