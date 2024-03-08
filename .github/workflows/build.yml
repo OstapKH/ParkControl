@@ -67,4 +67,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: cd /home/runner/work/dss2023-2024-ParkControl/dss2023-2024-ParkControl/core mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=M-Lock_dss2023-2024-ParkControl
+        working-directory: core
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=M-Lock_dss2023-2024-ParkControl
