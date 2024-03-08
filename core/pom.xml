@@ -11,9 +11,9 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <java.version>17</java.version>
+        <sonar.organization>dss2023-2024-parkcontrol</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
-
     <dependencies>
 
         <!-- https://mvnrepository.com/artifact/junit/junit -->
