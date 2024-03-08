@@ -1,4 +1,4 @@
-package es.uca.dss.ParkControl;
+package es.uca.dss.ParkControl.core;
 import org.junit.Assert;
 import org.junit.Test;
 
