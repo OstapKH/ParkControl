@@ -4,17 +4,17 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class Report {
-    private UUID uuid;
+    private UUID id;
     private ReportType reportType;
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public ReportType getReportType() {
