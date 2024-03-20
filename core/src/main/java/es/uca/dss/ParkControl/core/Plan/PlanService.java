@@ -47,4 +47,5 @@ public class PlanService {
     public void deletePlan(UUID id) {
         planRepository.deleteById(id);
     }
+
 }
