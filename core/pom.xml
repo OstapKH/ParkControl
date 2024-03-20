@@ -30,6 +30,7 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.github.kenglxn.QRGen</groupId>
             <artifactId>javase</artifactId>
@@ -52,3 +53,4 @@
         </plugins>
     </reporting>
 </project>
+

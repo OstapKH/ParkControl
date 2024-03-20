@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class InMemoryPlanRepository implements PlanRepository {
-    private List<Plan> plans = new ArrayList<>();
+    private List<Plan> plans;
 
     public InMemoryPlanRepository() {
         this.plans = new ArrayList<>();

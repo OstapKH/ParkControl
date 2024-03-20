@@ -39,6 +39,7 @@ public class ParkingService {
     }
 
     public void addVehicleToParking(UUID parkingId, Vehicle vehicle) {
+
         Parking parking = parkingRepository.findById(parkingId);
         if (parking != null) {
             List<Vehicle> vehicles = parking.getAllocatedVehicles();
@@ -68,7 +69,7 @@ public class ParkingService {
             if (--currentAvailableSpaces < 0) {
                 System.out.println("Maximal amount of cars in the parking: " + parkingId);
             } else {
-                parking.setCurrentAvailableNumberOfSpaces(--currentAvailableSpaces);
+                parking.setCurrentAvailableNumberOfSpaces(currentAvailableSpaces);
                 parkingRepository.save(parking);
             }
         } else {
