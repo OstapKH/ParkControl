@@ -1,8 +1,6 @@
 package es.uca.dss.ParkControl.core.Report;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.After;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -57,5 +55,5 @@ public class ReportServiceTest {
         List<Report> reports = reportService.getAllReports();
         assertEquals(0,reports.size());
     }
-    
+
 }
