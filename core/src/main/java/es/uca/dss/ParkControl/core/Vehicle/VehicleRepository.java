@@ -6,6 +6,7 @@ import java.util.UUID;
 public interface VehicleRepository {
     void save(Vehicle vehicle);
     Vehicle findById(UUID id);
+    Vehicle findByRegistrationNumber(String registrationNumber);
     List<Vehicle> findAll();
     void deleteById(UUID id);
 }

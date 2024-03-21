@@ -30,6 +30,16 @@ public class InMemoryVehicleRepository implements VehicleRepository{
     }
 
     @Override
+    public Vehicle findByRegistrationNumber(String registrationNumber) {
+        for (Vehicle vehicle : vehicles) {
+            if (vehicle.getRegistrationNumber().equals(registrationNumber)) {
+                return vehicle;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public List<Vehicle> findAll() {
         return vehicles;
     }

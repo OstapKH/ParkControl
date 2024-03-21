@@ -25,4 +25,8 @@ public class VehicleService {
     public void deleteVehicle(UUID id) {
         repository.deleteById(id);
     }
+
+    public Vehicle getVehicleByRegistrationNumber(String registrationNumber) {
+        return repository.findByRegistrationNumber(registrationNumber);
+    }
 }
