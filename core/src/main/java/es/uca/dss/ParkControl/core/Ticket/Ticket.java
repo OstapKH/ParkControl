@@ -1,5 +1,6 @@
 package es.uca.dss.ParkControl.core.Ticket;
 
+import es.uca.dss.ParkControl.core.Parking.Parking;
 import es.uca.dss.ParkControl.core.Plan.Plan;
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
 
@@ -8,6 +9,8 @@ import java.util.UUID;
 
 public class Ticket {
     private UUID id;
+
+    private Parking parking;
     private Vehicle vehicle;
     private Plan plan;
     private LocalDate dateOfIssue;
@@ -51,5 +54,13 @@ public class Ticket {
 
     public void setDateOfPayment(LocalDate dateOfPayment) {
         this.dateOfPayment = dateOfPayment;
+    }
+
+    public Parking getParking() {
+        return parking;
+    }
+
+    public void setParking(Parking parking) {
+        this.parking = parking;
     }
 }
