@@ -1,7 +1,6 @@
 package es.uca.dss.ParkControl.core.Subscription;
 
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
-
 import java.time.LocalDate;
 import java.util.UUID;
 

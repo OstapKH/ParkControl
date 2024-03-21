@@ -3,7 +3,7 @@ package es.uca.dss.ParkControl.core.Vehicle;
 import java.util.List;
 import java.util.UUID;
 
-public class VehicleService {
+public class    VehicleService {
     private VehicleRepository repository;
 
     public VehicleService(VehicleRepository repository) {

@@ -5,7 +5,6 @@ import java.util.UUID;
 public class Vehicle {
     private UUID id;
     private String registrationNumber;
-
     public String getRegistrationNumber() {
         return registrationNumber;
     }

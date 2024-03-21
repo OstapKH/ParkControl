@@ -79,7 +79,6 @@ public class Example {
         subscription.setSubscriptionType(SubscriptionType.MONTH);
         subscription.setDateOfPurchase(LocalDate.parse("2023-02-01"));
         subscriptionRepository.save(subscription);
-
-
+        
     }
 }
