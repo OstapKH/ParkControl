@@ -1,7 +1,6 @@
 package es.uca.dss.ParkControl.core.Report;
 import org.junit.Before;
 import org.junit.Test;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import static org.junit.Assert.assertNotNull;
@@ -19,9 +18,6 @@ public class ReportServiceTest {
 
         report = new Report();
         report.setId(UUID.randomUUID());
-        report.setReportType(ReportType.CAR_ENTRANCE);
-        report.setStartDate(LocalDate.of(2024,3,2));
-        report.setEndDate(LocalDate.of(2024,3,4));
     }
 
     @Test
