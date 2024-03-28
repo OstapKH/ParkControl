@@ -1,6 +1,7 @@
 package es.uca.dss.ParkControl.core.Ticket;
 
 import es.uca.dss.ParkControl.core.QRCodeGeneration.QRCodeGenerator;
+import es.uca.dss.ParkControl.core.Report.Report;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -38,4 +39,5 @@ public class TicketService {
     public ByteArrayOutputStream getTicketQRCodeByteArray(UUID id) throws Exception {
         return QRCodeGenerator.generateQRCodeByteOutput(id);
     }
+
 }

@@ -1,5 +1,7 @@
 package es.uca.dss.ParkControl.core.Ticket;
 
+import es.uca.dss.ParkControl.core.Report.Report;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -38,4 +40,5 @@ public class InMemoryTicketRepository implements TicketRepository{
     public void deleteById(UUID id) {
         tickets.removeIf(ticket -> ticket.getId().equals(id));
     }
+
 }

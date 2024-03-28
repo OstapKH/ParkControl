@@ -1,5 +1,7 @@
 package es.uca.dss.ParkControl.core.Vehicle;
 
+import com.beust.jcommander.internal.Nullable;
+
 import java.util.UUID;
 
 public class Vehicle {

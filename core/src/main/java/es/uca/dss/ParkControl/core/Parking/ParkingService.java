@@ -51,6 +51,28 @@ public class ParkingService {
         }
     }
 
+    public void removeVehicleFromParking(UUID parkingId, Vehicle vehicle) {
+        Parking parking = parkingRepository.findById(parkingId);
+        if (parking != null) {
+            List<Vehicle> vehicles = parking.getAllocatedVehicles();
+            vehicles.remove(vehicle);
+            parking.setAllocatedVehicles(vehicles);
+            parkingRepository.save(parking);
+        } else {
+            System.out.println("Parking not found with id: " + parkingId);
+        }
+    }
+
+    public void changeParkingMaxSpaces(UUID id, int newMaxSpaces) {
+        Parking parking = parkingRepository.findById(id);
+        if (parking != null) {
+            parking.setMaxNumberOfSpaces(newMaxSpaces);
+            parkingRepository.save(parking);
+        } else {
+            System.out.println("Parking not found with id: " + id);
+        }
+    }
+
     public void incrementCurrentAvailableSpaces(UUID parkingId) {
         Parking parking = parkingRepository.findById(parkingId);
         if (parking != null) {

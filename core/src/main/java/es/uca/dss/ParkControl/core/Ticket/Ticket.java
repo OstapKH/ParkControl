@@ -5,6 +5,7 @@ import es.uca.dss.ParkControl.core.Plan.Plan;
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Ticket {
@@ -13,8 +14,8 @@ public class Ticket {
     private Parking parking;
     private Vehicle vehicle;
     private Plan plan;
-    private LocalDate dateOfIssue;
-    private LocalDate dateOfPayment;
+    private LocalDateTime dateOfIssue;
+    private LocalDateTime dateOfPayment;
 
     public UUID getId() {
         return id;
@@ -40,19 +41,19 @@ public class Ticket {
         this.plan = plan;
     }
 
-    public LocalDate getDateOfIssue() {
+    public LocalDateTime getDateOfIssue() {
         return dateOfIssue;
     }
 
-    public void setDateOfIssue(LocalDate dateOfIssue) {
+    public void setDateOfIssue(LocalDateTime dateOfIssue) {
         this.dateOfIssue = dateOfIssue;
     }
 
-    public LocalDate getDateOfPayment() {
+    public LocalDateTime getDateOfPayment() {
         return dateOfPayment;
     }
 
-    public void setDateOfPayment(LocalDate dateOfPayment) {
+    public void setDateOfPayment(LocalDateTime dateOfPayment) {
         this.dateOfPayment = dateOfPayment;
     }
 
