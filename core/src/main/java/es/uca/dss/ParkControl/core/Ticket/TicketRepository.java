@@ -10,5 +10,5 @@ public interface TicketRepository {
     Ticket findById(UUID id);
     List<Ticket> findAll();
     void deleteById(UUID id);
-
+    List<Ticket> findByAllByRegistrationNumber(String registrationNumber);
 }

@@ -2,6 +2,7 @@ package es.uca.dss.ParkControl.core.Subscription;
 
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Subscription {
@@ -9,7 +10,7 @@ public class Subscription {
 
     private Vehicle vehicle;
 
-    private LocalDate dateOfPurchase;
+    private LocalDateTime dateOfPurchase;
 
     private SubscriptionType subscriptionType;
 
@@ -29,11 +30,11 @@ public class Subscription {
         this.vehicle = vehicle;
     }
 
-    public LocalDate getDateOfPurchase() {
+    public LocalDateTime getDateOfPurchase() {
         return dateOfPurchase;
     }
 
-    public void setDateOfPurchase(LocalDate dateOfPurchase) {
+    public void setDateOfPurchase(LocalDateTime dateOfPurchase) {
         this.dateOfPurchase = dateOfPurchase;
     }
 

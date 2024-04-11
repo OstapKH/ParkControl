@@ -41,4 +41,15 @@ public class InMemoryTicketRepository implements TicketRepository{
         tickets.removeIf(ticket -> ticket.getId().equals(id));
     }
 
+    @Override
+    public List<Ticket> findByAllByRegistrationNumber(String registrationNumber) {
+        List<Ticket> allTickets = new ArrayList<>();
+        for (Ticket ticket : tickets) {
+            if (ticket.getVehicle().getRegistrationNumber().equals(registrationNumber)) {
+                allTickets.add(ticket);
+            }
+        }
+        return allTickets;
+    }
+
 }
