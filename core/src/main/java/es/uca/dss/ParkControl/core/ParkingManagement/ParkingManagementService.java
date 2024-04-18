@@ -20,10 +20,13 @@ import es.uca.dss.ParkControl.core.Vehicle.InMemoryVehicleRepository;
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
 import es.uca.dss.ParkControl.core.Vehicle.VehicleService;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 public class ParkingManagementService {
 
@@ -296,4 +299,24 @@ public class ParkingManagementService {
         subscription.setDateOfPurchase(LocalDateTime.now());
         return amount - subscriptionPrice;
     }
+
+
+    public Optional<List<Record>> getEntriesStatisticByDay(UUID parkingId, LocalDateTime dayDate){
+        return Optional.of(recordService.getEntriesByDay(parkingId, dayDate));
+    }
+
+    public Optional<List<Record>> getExitsStatisticByDay(UUID parkingId, LocalDateTime dayDate){
+        return Optional.of(recordService.getExitsByDay(parkingId, dayDate));
+    }
+
+    public Optional<List<Record>> getEntriesStatisticByMonth(UUID parkingId, LocalDateTime monthDate){
+        return Optional.of(recordService.getEntriesByMonth(parkingId, monthDate));
+    }
+
+    public Optional<List<Record>> getExitsStatisticByMonth(UUID parkingId, LocalDateTime monthDate){
+        return Optional.of(recordService.getExitsByMonth(parkingId, monthDate));
+    }
+
+    // TODO Check if Optional would be suitable here.
+    // Especially check if Optional returns empty in case if ArrayList has 0 members
 }
