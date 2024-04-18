@@ -28,7 +28,8 @@ public class TicketService {
     }
 
     public Ticket getLatestTicket(String registrationNumber) {
-        return repository.findByAllByRegistrationNumber(registrationNumber).getLast();
+        List<Ticket> tickets = repository.findByAllByRegistrationNumber(registrationNumber);
+        return tickets.get(tickets.size() - 1);
     }
 
     public void deleteTicket(UUID id) {

@@ -1,7 +1,10 @@
 package es.uca.dss.ParkControl.core.Subscription;
 
+import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class InMemorySubscriptionRepository implements SubscriptionRepository{
@@ -30,6 +33,14 @@ public class InMemorySubscriptionRepository implements SubscriptionRepository{
     }
 
     @Override
+    public Subscription findByType(SubscriptionType subscriptionType) {
+        return subscriptions.stream()
+                .filter(subscription -> subscription.getSubscriptionType().equals(subscriptionType))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
     public List<Subscription> findAll() {
         return subscriptions;
     }
@@ -37,5 +48,15 @@ public class InMemorySubscriptionRepository implements SubscriptionRepository{
     @Override
     public void deleteById(UUID id) {
         subscriptions.removeIf(subscription -> subscription.getId().equals(id));
+    }
+
+    @Override
+    public Subscription findSubscriptionByRegistrationNumber(String registrationNumber) {
+        for (Subscription subscription: subscriptions){
+            if (subscription.getVehicle().getRegistrationNumber().equals(registrationNumber)){
+                return subscription;
+            }
+        }
+        return null;
     }
 }
