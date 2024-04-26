@@ -76,7 +76,7 @@ public class Example {
             ticket.setId(UUID.randomUUID());
             ticket.setParking(parking);
             ticket.setVehicle(vehicle);
-            ticket.setDateOfIssue(LocalDate.now().plusDays(i));
+            ticket.setDateOfIssue(LocalDateTime.now().plusDays(i));
             ticket.setPlan(planDay);
             ticketRepository.save(ticket);
 //            LocalDateTime dateOfEntry = LocalDateTime.now();
@@ -93,8 +93,8 @@ public class Example {
         subscription.setId(UUID.randomUUID());
         // We suppose that car with "1214ABC" registration number is a subscriber of MONTH type
         subscription.setVehicle(vehicleRepository.findByRegistrationNumber("1214ABC"));
-        subscription.setSubscriptionType(SubscriptionType.MONTH);
-        subscription.setDateOfPurchase(LocalDate.parse("2023-02-01"));
+//        subscription.setSubscriptionType(SubscriptionType.MONTH);
+        subscription.setDateOfPurchase(LocalDateTime.parse("2023-02-01"));
         subscriptionRepository.save(subscription);
 
         // User would like to pay for the ticket
@@ -112,7 +112,7 @@ public class Example {
         transactionRepository.save(transaction);
 
         if (transaction.isDone()){
-            ticket.setDateOfPayment(LocalDate.now());
+            ticket.setDateOfPayment(LocalDateTime.now());
             ticketRepository.save(ticket);
             // Show message that ticket was paid successfully
         }

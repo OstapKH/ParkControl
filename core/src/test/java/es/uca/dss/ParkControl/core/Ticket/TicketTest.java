@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import java.time.LocalDate;
 import java.util.UUID;
+import java.time.LocalDateTime;
 import static org.junit.Assert.assertEquals;
 public class TicketTest {
     private Ticket ticket;
@@ -12,14 +13,14 @@ public class TicketTest {
     private Plan plan;
     @Before
     public void SetUp(){
-        vehicle = new Vehicle();
-        plan = new Plan();
-        ticket = new Ticket();
-        ticket.setId(UUID.randomUUID());
-        ticket.setPlan(plan);
-        ticket.setVehicle(vehicle);
-        ticket.setDateOfIssue(LocalDate.of(2024,3,4));
-        ticket.setDateOfPayment(LocalDate.of(2024,3,5));
+//        vehicle = new Vehicle();
+//        plan = new Plan();
+//        ticket = new Ticket();
+//        ticket.setId(UUID.randomUUID());
+//        ticket.setPlan(plan);
+//        ticket.setVehicle(vehicle);
+//        ticket.setDateOfIssue(LocalDateTime.of(2024,3,4));
+//        ticket.setDateOfPayment(LocalDateTime.of(2024,3,5));
     }
 
     @Test

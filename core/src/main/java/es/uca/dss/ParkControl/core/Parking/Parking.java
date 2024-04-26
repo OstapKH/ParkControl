@@ -2,6 +2,7 @@ package es.uca.dss.ParkControl.core.Parking;
 
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -12,7 +13,7 @@ public class Parking {
     private String zipCode;
     private int maxNumberOfSpaces;
     private int currentAvailableNumberOfSpaces;
-    private List<Vehicle> allocatedVehicles;
+    private List<Vehicle> allocatedVehicles = new ArrayList<>();
 
     public UUID getId() {
         return id;

@@ -4,6 +4,7 @@ import es.uca.dss.ParkControl.core.Parking.InMemoryParkingRepository;
 import es.uca.dss.ParkControl.core.Parking.Parking;
 import es.uca.dss.ParkControl.core.Parking.ParkingService;
 import es.uca.dss.ParkControl.core.Plan.InMemoryPlanRepository;
+import es.uca.dss.ParkControl.core.Plan.Plan;
 import es.uca.dss.ParkControl.core.Plan.PlanService;
 import es.uca.dss.ParkControl.core.Plan.PlanType;
 import es.uca.dss.ParkControl.core.Record.InMemoryRecordRepository;
@@ -66,13 +67,15 @@ public class ParkingManagementService {
     }
 
     // Method to create a parking
-    public void createParking(String name, int maxNumberOfSpaces, String zipCode) {
+    public UUID createParking(String name, int maxNumberOfSpaces, String zipCode) {
         Parking parking = new Parking();
         parking.setId(UUID.randomUUID());
         parking.setName(name);
         parking.setMaxNumberOfSpaces(maxNumberOfSpaces);
+        parking.setCurrentAvailableNumberOfSpaces(maxNumberOfSpaces);
         parking.setZipCode(zipCode);
         parkingService.saveParking(parking);
+        return parking.getId();
     }
 
     // Method to change parking details
@@ -84,6 +87,7 @@ public class ParkingManagementService {
             parking.setMaxNumberOfSpaces(newAmountOfSpaces);
         }
     }
+
 
     // Method to simulate a vehicle entering the parking
     public Optional<Ticket> addVehicleToParking(UUID parkingId, String registrationNumber) {
@@ -102,6 +106,13 @@ public class ParkingManagementService {
         ticket.setId(UUID.randomUUID());
         ticket.setVehicle(vehicle);
         ticket.setParking(parkingService.getParkingById(parkingId));
+        ticket.setDateOfIssue(LocalDateTime.now());
+        Plan plan = new Plan();
+        plan.setPlanName("Basic");
+        plan.setPlanType(PlanType.MINUTES);
+        plan.setId(UUID.randomUUID());
+        plan.setPrice(0.2);
+        ticket.setPlan(plan);
         ticketService.createTicket(ticket);
         Record record = new Record();
         record.setId(UUID.randomUUID());
@@ -124,6 +135,13 @@ public class ParkingManagementService {
         ticket.setId(UUID.randomUUID());
         ticket.setVehicle(vehicle);
         ticket.setParking(parkingService.getParkingById(parkingId));
+        ticket.setDateOfIssue(LocalDateTime.now());
+        Plan plan = new Plan();
+        plan.setPlanName("Basic");
+        plan.setPlanType(PlanType.MINUTES);
+        plan.setId(UUID.randomUUID());
+        plan.setPrice(0.2);
+        ticket.setPlan(plan);
         ticketService.createTicket(ticket);
         Record record = new Record();
         record.setId(UUID.randomUUID());
@@ -138,7 +156,9 @@ public class ParkingManagementService {
         boolean isExitPermitted = false;
         Ticket ticket = ticketService.getLatestTicket(registrationNumber);
         if (ticket != null) {
-            if (ticket.getParking().getId().equals(parkingId) && ticket.getDateOfPayment().isBefore(LocalDateTime.now().minusMinutes(10))){
+            boolean isIdEqual = ticket.getParking().getId().equals(parkingId);
+            boolean isDateBefore = ticket.getDateOfPayment().isBefore(LocalDateTime.now().plusMinutes(10));
+            if (ticket.getParking().getId().equals(parkingId) && ticket.getDateOfPayment().isBefore(LocalDateTime.now().plusMinutes(10))){
                 isExitPermitted = true;
                 removeVehicleFromParking(parkingId, registrationNumber);
                 return isExitPermitted;
@@ -155,7 +175,7 @@ public class ParkingManagementService {
     public boolean vehicleExit(UUID parkingId, Ticket ticket) {
         boolean isExitPermitted = false;
         if (ticket != null) {
-            if (ticket.getParking().getId().equals(parkingId) && ticket.getDateOfPayment().isBefore(LocalDateTime.now().minusMinutes(10))){
+            if (ticket.getParking().getId().equals(parkingId) && ticket.getDateOfPayment().isBefore(LocalDateTime.now().plusMinutes(10))){
                 isExitPermitted = true;
                 removeVehicleFromParking(parkingId, ticket.getVehicle().getRegistrationNumber());
                 return isExitPermitted;
@@ -189,12 +209,16 @@ public class ParkingManagementService {
         if (ticketPlanType == PlanType.WEEKS) {
             return weeks * ticketPlanPrice + days * ticketPlanPrice / 7.0 + hours * ticketPlanPrice / 168.0;
         } else if (ticketPlanType == PlanType.DAYS) {
-            return days * ticketPlanPrice + hours * ticketPlanPrice / 24.0;
+            return days * ticketPlanPrice + (hours - days*24) * ticketPlanPrice / 24.0;
         } else if (ticketPlanType == PlanType.HOURS) {
             return hours * ticketPlanPrice + minutes * ticketPlanPrice / 60.0;
         } else return minutes * ticketPlanPrice;
     }
 
+    public void changeTicketPlan(UUID ticketId, Plan newPlan){
+        Ticket ticket = ticketService.getTicket(ticketId);
+        ticket.setPlan(newPlan);
+    }
     private PlanType calculateTicketPlanType(Ticket ticket) {
         LocalDateTime dateOfEntry = ticket.getDateOfIssue();
         LocalDateTime tempDateTime = LocalDateTime.from(dateOfEntry);
@@ -253,17 +277,19 @@ public class ParkingManagementService {
         subscription.setId(UUID.randomUUID());
         subscription.setSubscriptionType(subscriptionType);
         subscription.setDateOfPurchase(LocalDateTime.now());
+        subscriptionService.createSubscription(subscription);
         return subscription;
     }
 
-    public void createSubscriptionType(String name, double price) {
-        SubscriptionType subscriptionType = new SubscriptionType();
-        // TODO Ask about this method
-        subscriptionType.setId(UUID.fromString(name));
-        subscriptionType.setName(name);
-        subscriptionType.setPrice(price);
-        subscriptionTypeService.saveSubscriptionType(subscriptionType);
-    }
+    public UUID createSubscriptionType(String name, double price) {
+    SubscriptionType subscriptionType = new SubscriptionType();
+    // TODO Ask about this method
+    subscriptionType.setId(UUID.randomUUID());
+    subscriptionType.setName(name);
+    subscriptionType.setPrice(price);
+    subscriptionTypeService.saveSubscriptionType(subscriptionType);
+    return subscriptionType.getId();
+}
 
     public void changeSubscriptionTypePrice(String name, double newPrice) {
         SubscriptionType subscriptionType = subscriptionTypeService.getSubscriptionByName(name);
@@ -300,7 +326,6 @@ public class ParkingManagementService {
         return amount - subscriptionPrice;
     }
 
-
     public Optional<List<Record>> getEntriesStatisticByDay(UUID parkingId, LocalDateTime dayDate){
         return Optional.of(recordService.getEntriesByDay(parkingId, dayDate));
     }
@@ -317,6 +342,17 @@ public class ParkingManagementService {
         return Optional.of(recordService.getExitsByMonth(parkingId, monthDate));
     }
 
+    public Parking getParkingById(UUID parkingId) {
+        return parkingService.getParkingById(parkingId);
+    }
     // TODO Check if Optional would be suitable here.
     // Especially check if Optional returns empty in case if ArrayList has 0 members
+
+    public SubscriptionType getSubscriptionTypeById(UUID id) {
+        return subscriptionTypeService.getSubscription(id);
+    }
+
+    public Subscription getSubscriptionById(UUID id) {
+        return subscriptionService.getSubscription(id);
+    }
 }
