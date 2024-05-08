@@ -1,16 +1,17 @@
 package es.uca.dss.ParkControl.core.Parking;
+
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.After;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.Assert.*;
 public class ParkingServiceTest {
     private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;

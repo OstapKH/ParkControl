@@ -1,13 +1,16 @@
 package es.uca.dss.ParkControl.core.Plan;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.After;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.UUID;
-import static org.junit.Assert.assertNotNull;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 public class PlanServiceTest {
     private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;

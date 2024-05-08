@@ -1,9 +1,12 @@
 package es.uca.dss.ParkControl.core.Plan;
 
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.UUID;
 
-public class    PlanService {
+@Service
+public class PlanService {
     private PlanRepository planRepository;
 
     public PlanService(PlanRepository planRepository) {

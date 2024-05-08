@@ -5,6 +5,7 @@ import java.util.*;
 public class InMemorySubscriptionTypeRepository implements SubscriptionTypeRepository{
     public Set<SubscriptionType> subscriptionTypes = new HashSet<>();
 
+
     @Override
     public void save(SubscriptionType subscriptionType) {
         // TODO What if I want to compare them by name? Is my implementation OK?
@@ -12,23 +13,23 @@ public class InMemorySubscriptionTypeRepository implements SubscriptionTypeRepos
     }
 
     @Override
-    public SubscriptionType findById(UUID id) {
+    public Optional<SubscriptionType> findById(UUID id) {
         for (SubscriptionType subscriptionType: subscriptionTypes){
             if (subscriptionType.getId().equals(id)){
-                return subscriptionType;
+                return Optional.of(subscriptionType);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    public SubscriptionType findByName(String name) {
+    public Optional<SubscriptionType> findByName(String name) {
         for(SubscriptionType subscriptionType: subscriptionTypes){
             if (subscriptionType.getName().equals(name)){
-                return subscriptionType;
+                return Optional.of(subscriptionType);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

@@ -1,13 +1,21 @@
 package es.uca.dss.ParkControl.core.Subscription;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.util.Objects;
 import java.util.UUID;
 
-// Instead of using ENUM for subscription type, it was decided to use class as it allows more flexibility, thus User of the system can create new subscription types
+@Entity
+@Table(name = "subscription_types")
 public class SubscriptionType {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String name;
-    double price;
+    private double price;
 
     public SubscriptionType() {
     }
@@ -35,6 +43,7 @@ public class SubscriptionType {
     public void setId(UUID id) {
         this.id = id;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,5 +55,4 @@ public class SubscriptionType {
     public int hashCode() {
         return Objects.hash(id, name, price);
     }
-
 }

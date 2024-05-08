@@ -1,11 +1,13 @@
 package es.uca.dss.ParkControl.core.Ticket;
+
 import es.uca.dss.ParkControl.core.Plan.Plan;
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.time.LocalDate;
 import java.util.UUID;
-import java.time.LocalDateTime;
+
 import static org.junit.Assert.assertEquals;
 public class TicketTest {
     private Ticket ticket;

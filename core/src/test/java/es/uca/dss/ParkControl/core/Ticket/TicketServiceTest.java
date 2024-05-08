@@ -1,14 +1,14 @@
 package es.uca.dss.ParkControl.core.Ticket;
-import es.uca.dss.ParkControl.core.QRCodeGeneration.QRCodeGenerator;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.UUID;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.*;
 public class TicketServiceTest {
     private TicketService ticketService;
     private TicketRepository ticketRepository;

@@ -1,6 +1,5 @@
 package es.uca.dss.ParkControl.core.QRCodeGeneration;
 
-import es.uca.dss.ParkControl.core.QRCodeGeneration.QRCodeGenerator;
 import org.junit.After;
 import org.junit.Test;
 

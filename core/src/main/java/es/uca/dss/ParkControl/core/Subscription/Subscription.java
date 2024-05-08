@@ -1,17 +1,25 @@
 package es.uca.dss.ParkControl.core.Subscription;
 
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
-import java.time.LocalDate;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name = "subscriptions")
 public class Subscription {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @ManyToOne
     private Vehicle vehicle;
 
     private LocalDateTime dateOfPurchase;
 
+    @ManyToOne
+    @JoinColumn(name = "subscription_type_id")
     private SubscriptionType subscriptionType;
 
     public UUID getId() {

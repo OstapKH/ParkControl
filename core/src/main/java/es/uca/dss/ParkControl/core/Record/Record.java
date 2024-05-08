@@ -3,22 +3,29 @@ package es.uca.dss.ParkControl.core.Record;
 import es.uca.dss.ParkControl.core.Parking.Parking;
 import es.uca.dss.ParkControl.core.Ticket.Ticket;
 import es.uca.dss.ParkControl.core.Transaction.Transaction;
-import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name = "records")
 public class Record {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @ManyToOne
     private Ticket ticket;
 
+    @ManyToOne
     private Parking parking;
 
     private LocalDateTime dateOfEntry;
 
     private LocalDateTime dateOfExit;
 
+    @ManyToOne
     private Transaction transaction;
 
     public UUID getId() {

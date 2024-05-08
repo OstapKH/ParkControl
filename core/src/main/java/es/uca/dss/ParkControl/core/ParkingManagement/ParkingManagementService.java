@@ -1,34 +1,31 @@
 package es.uca.dss.ParkControl.core.ParkingManagement;
 
-import es.uca.dss.ParkControl.core.Parking.InMemoryParkingRepository;
 import es.uca.dss.ParkControl.core.Parking.Parking;
+import es.uca.dss.ParkControl.core.Parking.ParkingRepository;
 import es.uca.dss.ParkControl.core.Parking.ParkingService;
-import es.uca.dss.ParkControl.core.Plan.InMemoryPlanRepository;
-import es.uca.dss.ParkControl.core.Plan.Plan;
-import es.uca.dss.ParkControl.core.Plan.PlanService;
-import es.uca.dss.ParkControl.core.Plan.PlanType;
-import es.uca.dss.ParkControl.core.Record.InMemoryRecordRepository;
+import es.uca.dss.ParkControl.core.Plan.*;
 import es.uca.dss.ParkControl.core.Record.Record;
+import es.uca.dss.ParkControl.core.Record.RecordRepository;
 import es.uca.dss.ParkControl.core.Record.RecordService;
 import es.uca.dss.ParkControl.core.Subscription.*;
-import es.uca.dss.ParkControl.core.Ticket.InMemoryTicketRepository;
 import es.uca.dss.ParkControl.core.Ticket.Ticket;
+import es.uca.dss.ParkControl.core.Ticket.TicketRepository;
 import es.uca.dss.ParkControl.core.Ticket.TicketService;
-import es.uca.dss.ParkControl.core.Transaction.InMemoryTransactionRepository;
 import es.uca.dss.ParkControl.core.Transaction.Transaction;
+import es.uca.dss.ParkControl.core.Transaction.TransactionRepository;
 import es.uca.dss.ParkControl.core.Transaction.TransactionService;
-import es.uca.dss.ParkControl.core.Vehicle.InMemoryVehicleRepository;
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
+import es.uca.dss.ParkControl.core.Vehicle.VehicleRepository;
 import es.uca.dss.ParkControl.core.Vehicle.VehicleService;
+import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
 
+@Service
 public class ParkingManagementService {
 
     // Creating the services to manage the data
@@ -43,18 +40,17 @@ public class ParkingManagementService {
     private SubscriptionTypeService subscriptionTypeService;
 
     // Creating the repositories to save the data
-    InMemoryParkingRepository parkingRepository = new InMemoryParkingRepository();
-    InMemorySubscriptionRepository subscriptionRepository = new InMemorySubscriptionRepository();
-    InMemoryPlanRepository planRepository = new InMemoryPlanRepository();
-    InMemoryTicketRepository ticketRepository = new InMemoryTicketRepository();
-    InMemoryTransactionRepository transactionRepository = new InMemoryTransactionRepository();
-    InMemoryVehicleRepository vehicleRepository = new InMemoryVehicleRepository();
-    InMemoryRecordRepository recordRepository = new InMemoryRecordRepository();
+//    ParkingRepository parkingRepository = new ();
+//    InMemorySubscriptionRepository subscriptionRepository = new InMemorySubscriptionRepository();
+//    InMemoryPlanRepository planRepository = new InMemoryPlanRepository();
+//    InMemoryTicketRepository ticketRepository = new InMemoryTicketRepository();
+//    InMemoryTransactionRepository transactionRepository = new InMemoryTransactionRepository();
+//    InMemoryVehicleRepository vehicleRepository = new InMemoryVehicleRepository();
+//    InMemoryRecordRepository recordRepository = new InMemoryRecordRepository();
+//
+//    InMemorySubscriptionTypeRepository subscriptionTypeRepository = new InMemorySubscriptionTypeRepository();
 
-    InMemorySubscriptionTypeRepository subscriptionTypeRepository = new InMemorySubscriptionTypeRepository();
-
-
-    public ParkingManagementService() {
+    public ParkingManagementService(ParkingRepository parkingRepository, PlanRepository planRepository, SubscriptionRepository subscriptionRepository, TicketRepository ticketRepository, TransactionRepository transactionRepository, VehicleRepository vehicleRepository, RecordRepository recordRepository, SubscriptionTypeRepository subscriptionTypeRepository) {
         // Creating the services to manage the data
         this.parkingService = new ParkingService(parkingRepository);
         this.planService = new PlanService(planRepository);
@@ -292,9 +288,12 @@ public class ParkingManagementService {
 }
 
     public void changeSubscriptionTypePrice(String name, double newPrice) {
-        SubscriptionType subscriptionType = subscriptionTypeService.getSubscriptionByName(name);
-        subscriptionType.setPrice(newPrice);
-        subscriptionTypeService.saveSubscriptionType(subscriptionType);
+        Optional<SubscriptionType> subscriptionTypeOptional = subscriptionTypeService.getSubscriptionByName(name);
+        if (subscriptionTypeOptional.isPresent()) {
+            SubscriptionType subscriptionType = subscriptionTypeOptional.get();
+            subscriptionType.setPrice(newPrice);
+            subscriptionTypeService.saveSubscriptionType(subscriptionType);
+        }
     }
 
     public void paymentOfSubscriptionByCard(UUID subscriptionId) {
@@ -348,7 +347,7 @@ public class ParkingManagementService {
     // TODO Check if Optional would be suitable here.
     // Especially check if Optional returns empty in case if ArrayList has 0 members
 
-    public SubscriptionType getSubscriptionTypeById(UUID id) {
+    public Optional<SubscriptionType> getSubscriptionTypeById(UUID id) {
         return subscriptionTypeService.getSubscription(id);
     }
 

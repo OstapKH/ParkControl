@@ -1,19 +1,25 @@
 package es.uca.dss.ParkControl.core;
+
+import es.uca.dss.ParkControl.core.Parking.InMemoryParkingRepository;
+import es.uca.dss.ParkControl.core.Parking.Parking;
+import es.uca.dss.ParkControl.core.ParkingManagement.ParkingManagementService;
+import es.uca.dss.ParkControl.core.Plan.InMemoryPlanRepository;
 import es.uca.dss.ParkControl.core.Plan.Plan;
 import es.uca.dss.ParkControl.core.Plan.PlanType;
+import es.uca.dss.ParkControl.core.Record.InMemoryRecordRepository;
+import es.uca.dss.ParkControl.core.Subscription.InMemorySubscriptionRepository;
+import es.uca.dss.ParkControl.core.Subscription.InMemorySubscriptionTypeRepository;
 import es.uca.dss.ParkControl.core.Subscription.Subscription;
-import es.uca.dss.ParkControl.core.Ticket.Ticket;
-import org.junit.Assert;
-import org.junit.Test;
-
-import es.uca.dss.ParkControl.core.ParkingManagement.ParkingManagementService;
 import es.uca.dss.ParkControl.core.Subscription.SubscriptionType;
-import es.uca.dss.ParkControl.core.Parking.Parking;
+import es.uca.dss.ParkControl.core.Ticket.InMemoryTicketRepository;
+import es.uca.dss.ParkControl.core.Ticket.Ticket;
+import es.uca.dss.ParkControl.core.Transaction.InMemoryTransactionRepository;
+import es.uca.dss.ParkControl.core.Vehicle.InMemoryVehicleRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.*;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,7 +27,15 @@ public class ParkingManagementServiceTest {
     private ParkingManagementService service;
     @Before
     public void setUp() {
-        service = new ParkingManagementService();
+        InMemorySubscriptionRepository inMemorySubscriptionRepository = new InMemorySubscriptionRepository();
+        InMemorySubscriptionTypeRepository inMemorySubscriptionTypeRepository = new InMemorySubscriptionTypeRepository();
+        InMemoryPlanRepository inMemoryPlanRepository = new InMemoryPlanRepository();
+        InMemoryTicketRepository inMemoryTicketRepository = new InMemoryTicketRepository();
+        InMemoryParkingRepository inMemoryParkingRepository = new InMemoryParkingRepository();
+        InMemoryTransactionRepository inMemoryTransactionRepository = new InMemoryTransactionRepository();
+        InMemoryVehicleRepository inMemoryVehicleRepository = new InMemoryVehicleRepository();
+        InMemoryRecordRepository inMemoryRecordRepository = new InMemoryRecordRepository();
+        service = new ParkingManagementService(inMemoryParkingRepository, inMemoryPlanRepository, inMemorySubscriptionRepository, inMemoryTicketRepository, inMemoryTransactionRepository, inMemoryVehicleRepository, inMemoryRecordRepository, inMemorySubscriptionTypeRepository);
     }
 
     @Test
@@ -290,10 +304,10 @@ public class ParkingManagementServiceTest {
         UUID subscriptionId = service.createSubscriptionType(subscriptionTypeName, subscriptionTypePrice);
 
         // Assert
-        SubscriptionType subscriptionType = service.getSubscriptionTypeById(subscriptionId);
+        Optional<SubscriptionType> subscriptionType = service.getSubscriptionTypeById(subscriptionId);
         Assert.assertNotNull(subscriptionType); // Check if subscription type is not null
-        Assert.assertEquals(subscriptionTypeName, subscriptionType.getName()); // Check if the subscription type name is correct
-        Assert.assertEquals(subscriptionTypePrice, subscriptionType.getPrice(), 0.01); // Check if the subscription type price is correct
+        Assert.assertEquals(subscriptionTypeName, subscriptionType.get().getName()); // Check if the subscription type name is correct
+        Assert.assertEquals(subscriptionTypePrice, subscriptionType.get().getPrice(), 0.01); // Check if the subscription type price is correct
     }
 
     @Test
@@ -304,13 +318,13 @@ public class ParkingManagementServiceTest {
         double newPrice = 60.0;
 
         UUID subscriptionTypeId = service.createSubscriptionType(subscriptionTypeName, originalPrice);
-        SubscriptionType originalSubscriptionType = service.getSubscriptionTypeById(subscriptionTypeId);
+        Optional<SubscriptionType> originalSubscriptionType = service.getSubscriptionTypeById(subscriptionTypeId);
 
         // Act
         service.changeSubscriptionTypePrice(subscriptionTypeName, newPrice);
 
         // Assert
-        SubscriptionType updatedSubscriptionType = service.getSubscriptionTypeById(subscriptionTypeId);
+        SubscriptionType updatedSubscriptionType = service.getSubscriptionTypeById(subscriptionTypeId).get();
         Assert.assertNotNull(updatedSubscriptionType); // Check if subscription type is not null
         Assert.assertEquals(subscriptionTypeName, updatedSubscriptionType.getName()); // Check if the subscription type name is correct
         Assert.assertEquals(newPrice, updatedSubscriptionType.getPrice(), 0.01); // Check if the subscription type price is updated correctly
@@ -322,9 +336,9 @@ public class ParkingManagementServiceTest {
         String subscriptionTypeName = "Monthly";
         double subscriptionTypePrice = 50.0;
         UUID subscriptionTypeId = service.createSubscriptionType(subscriptionTypeName, subscriptionTypePrice);
-        SubscriptionType subscriptionType = service.getSubscriptionTypeById(subscriptionTypeId);
+        Optional<SubscriptionType> subscriptionType = service.getSubscriptionTypeById(subscriptionTypeId);
         String registrationNumber = "ABC123";
-        Subscription subscription = service.subscribeVehicle(registrationNumber, subscriptionType);
+        Subscription subscription = service.subscribeVehicle(registrationNumber, subscriptionType.get());
 
         // Act
         service.paymentOfSubscriptionByCard(subscription.getId());

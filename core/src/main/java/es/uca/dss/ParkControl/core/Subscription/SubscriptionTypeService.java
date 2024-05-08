@@ -1,8 +1,12 @@
 package es.uca.dss.ParkControl.core.Subscription;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import org.springframework.stereotype.Service;
 
+
+@Service
 public class SubscriptionTypeService {
     private SubscriptionTypeRepository repository;
 
@@ -14,11 +18,11 @@ public class SubscriptionTypeService {
         repository.save(subscriptionType);
     }
 
-    public SubscriptionType getSubscription(UUID id) {
+    public Optional<SubscriptionType> getSubscription(UUID id) {
         return repository.findById(id);
     }
 
-    public SubscriptionType getSubscriptionByName(String name) {
+    public Optional<SubscriptionType> getSubscriptionByName(String name) {
         return repository.findByName(name);
     }
 
