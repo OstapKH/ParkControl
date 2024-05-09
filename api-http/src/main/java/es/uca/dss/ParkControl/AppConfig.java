@@ -85,18 +85,4 @@ public class AppConfig implements WebMvcConfigurer {
     public SpringTicketAdapterRepository springTicketAdapterRepository() {
         return new SpringTicketAdapterRepository(springTicketJpaRepository);
     }
-
-    @Bean
-    public ParkingManagementService parkingManagementService() {
-        return new ParkingManagementService(
-            springParkingAdapterRepository(),
-            springPlanAdapterRepository(),
-            springSubscriptionAdapterRepository(),
-            springTicketAdapterRepository(),
-            springTransactionAdapterRepository(),
-            springVehicleAdapterRepository(),
-            springRecordAdapterRepository(),
-            springSubscriptionTypeAdapterRepository()
-        );
-    }
 }
