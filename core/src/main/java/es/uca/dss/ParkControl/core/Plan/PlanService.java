@@ -21,6 +21,11 @@ public class PlanService {
         return planRepository.findById(id);
     }
 
+    public Plan getPlanByName(String name) {
+        return planRepository.findByName(name);
+    }
+
+
     public List<Plan> getAllPlans() {
         return planRepository.findAll();
     }

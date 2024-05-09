@@ -1,10 +1,7 @@
 package es.uca.dss.ParkControl.core.Subscription;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -14,6 +11,8 @@ public class SubscriptionType {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
+    @Column(unique = true)
     private String name;
     private double price;
 

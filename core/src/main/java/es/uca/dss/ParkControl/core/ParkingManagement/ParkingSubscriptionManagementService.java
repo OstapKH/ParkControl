@@ -39,7 +39,7 @@ public class ParkingSubscriptionManagementService {
         }
         subscription.setId(UUID.randomUUID());
         subscription.setSubscriptionType(subscriptionType);
-        subscription.setDateOfPurchase(LocalDateTime.now());
+        subscription.setDateOfPurchase(null);
         subscriptionService.createSubscription(subscription);
         return subscription;
     }
@@ -76,4 +76,23 @@ public class ParkingSubscriptionManagementService {
         return subscriptionService.getSubscription(id);
     }
 
+    public void deleteSubscriptionType(String name) {
+        Optional<SubscriptionType> subscriptionTypeOptional = subscriptionTypeService.getSubscriptionByName(name);
+        if (subscriptionTypeOptional.isPresent()) {
+            SubscriptionType subscriptionType = subscriptionTypeOptional.get();
+            subscriptionTypeService.deleteSubscription(subscriptionType.getId());
+        }
+    }
+
+    public Iterable<SubscriptionType> getAllSubscriptionTypes() {
+        return subscriptionTypeService.getAllSubscriptions();
+    }
+
+    public SubscriptionType getSubscriptionTypeByName(String name) {
+        return subscriptionTypeService.getSubscriptionByName(name).orElse(null);
+    }
+
+    public Iterable<Subscription> getAllSubscriptions() {
+        return subscriptionService.getAllSubscriptions();
+    }
 }

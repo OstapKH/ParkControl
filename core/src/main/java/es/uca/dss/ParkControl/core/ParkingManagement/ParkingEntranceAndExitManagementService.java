@@ -110,7 +110,7 @@ public class ParkingEntranceAndExitManagementService {
         if (ticket != null) {
             boolean isIdEqual = ticket.getParking().getId().equals(parkingId);
             boolean isDateBefore = ticket.getDateOfPayment().isBefore(LocalDateTime.now().plusMinutes(10));
-            if (ticket.getParking().getId().equals(parkingId) && ticket.getDateOfPayment().isBefore(LocalDateTime.now().plusMinutes(10))) {
+            if (isIdEqual && isDateBefore) {
                 isExitPermitted = true;
                 removeVehicleFromParking(parkingId, registrationNumber);
                 return isExitPermitted;

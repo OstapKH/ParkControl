@@ -37,4 +37,9 @@ public class SpringPlanAdapterRepository implements PlanRepository {
     public void deleteById(UUID id) {
         springPlanJpaRepository.deleteById(id);
     }
+
+    @Override
+    public Plan findByName(String name) {
+        return springPlanJpaRepository.findByName(name);
+    }
 }

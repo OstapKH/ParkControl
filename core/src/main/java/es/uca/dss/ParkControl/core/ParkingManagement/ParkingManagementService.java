@@ -3,8 +3,10 @@ package es.uca.dss.ParkControl.core.ParkingManagement;
 import es.uca.dss.ParkControl.core.Parking.Parking;
 import es.uca.dss.ParkControl.core.Parking.ParkingRepository;
 import es.uca.dss.ParkControl.core.Parking.ParkingService;
+import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -39,6 +41,21 @@ public class ParkingManagementService {
             parking.setZipCode(newZipCode);
             parking.setMaxNumberOfSpaces(newAmountOfSpaces);
         }
+    }
+
+    // Method to get all parkings
+    public Iterable<Parking> getAllParkings() {
+        return parkingService.getAllParkings();
+    }
+
+    // Method to delete a parking
+    public void deleteParking(UUID parkingId) {
+        parkingService.deleteParking(parkingId);
+    }
+
+    // Method to get all allocated vehicles in a parking
+    public Iterable<Vehicle> getAllAllocatedVehiclesInParking(UUID parkingId) {
+        return parkingService.getParkingById(parkingId).getAllocatedVehicles();
     }
 
     public Parking getParkingById(UUID parkingId) {

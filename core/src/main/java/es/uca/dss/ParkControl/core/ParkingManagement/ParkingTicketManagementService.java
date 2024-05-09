@@ -64,4 +64,7 @@ public class ParkingTicketManagementService {
         } else return PlanType.MINUTES;
     }
 
+    public Ticket getTicketById(UUID ticketId) {
+        return ticketService.getTicket(ticketId);
+    }
 }

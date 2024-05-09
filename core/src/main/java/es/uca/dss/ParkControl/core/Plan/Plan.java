@@ -15,7 +15,7 @@ public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    private String planName;
+    private String name;
     private double price;
 
     @Enumerated(EnumType.STRING)
@@ -30,11 +30,11 @@ public class Plan {
     }
 
     public String getPlanName() {
-        return planName;
+        return name;
     }
 
     public void setPlanName(String planName) {
-        this.planName = planName;
+        this.name = planName;
     }
 
     public double getPrice() {
