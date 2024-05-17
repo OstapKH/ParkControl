@@ -1,7 +1,5 @@
 package es.uca.dss.ParkControl.core.Ticket;
 
-import es.uca.dss.ParkControl.core.Report.Report;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -11,4 +9,5 @@ public interface TicketRepository {
     List<Ticket> findAll();
     void deleteById(UUID id);
     List<Ticket> findByAllByRegistrationNumber(String registrationNumber);
+    List<Ticket> findByAllByVehicleId(UUID vehicleId);
 }

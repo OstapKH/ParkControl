@@ -1,10 +1,12 @@
 package es.uca.dss.ParkControl.core.Parking;
 
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class ParkingService {
     private ParkingRepository parkingRepository;
 
@@ -58,6 +60,7 @@ public class ParkingService {
             List<Vehicle> vehicles = parking.getAllocatedVehicles();
             vehicles.remove(vehicle);
             parking.setAllocatedVehicles(vehicles);
+            parking.setCurrentAvailableNumberOfSpaces(parking.getCurrentAvailableNumberOfSpaces() + 1);
             parkingRepository.save(parking);
         } else {
             System.out.println("Parking not found with id: " + parkingId);

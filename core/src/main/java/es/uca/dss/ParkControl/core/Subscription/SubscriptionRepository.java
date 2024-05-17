@@ -12,6 +12,6 @@ public interface SubscriptionRepository {
     Subscription findByType(SubscriptionType subscriptionType);
     List<Subscription> findAll();
     void deleteById(UUID id);
-
     Subscription findSubscriptionByRegistrationNumber(String registrationNumber);
+    Subscription findSubscriptionByVehicleId(UUID vehicleId);
 }

@@ -3,17 +3,26 @@ package es.uca.dss.ParkControl.core.Ticket;
 import es.uca.dss.ParkControl.core.Parking.Parking;
 import es.uca.dss.ParkControl.core.Plan.Plan;
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
+import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name = "tickets")
 public class Ticket {
+    @Id
     private UUID id;
 
+    @ManyToOne
     private Parking parking;
+
+    @ManyToOne
     private Vehicle vehicle;
+
+    @ManyToOne
     private Plan plan;
+
     private LocalDateTime dateOfIssue;
     private LocalDateTime dateOfPayment;
 
@@ -23,6 +32,14 @@ public class Ticket {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public Parking getParking() {
+        return parking;
+    }
+
+    public void setParking(Parking parking) {
+        this.parking = parking;
     }
 
     public Vehicle getVehicle() {
@@ -57,11 +74,5 @@ public class Ticket {
         this.dateOfPayment = dateOfPayment;
     }
 
-    public Parking getParking() {
-        return parking;
-    }
-
-    public void setParking(Parking parking) {
-        this.parking = parking;
-    }
+    // getters and setters
 }

@@ -1,13 +1,19 @@
 package es.uca.dss.ParkControl.core.Subscription;
 
+import jakarta.persistence.*;
+
 import java.util.Objects;
 import java.util.UUID;
 
-// Instead of using ENUM for subscription type, it was decided to use class as it allows more flexibility, thus User of the system can create new subscription types
+@Entity
+@Table(name = "subscription_types")
 public class SubscriptionType {
+    @Id
     private UUID id;
+
+    @Column(unique = true)
     private String name;
-    double price;
+    private double price;
 
     public SubscriptionType() {
     }
@@ -35,6 +41,7 @@ public class SubscriptionType {
     public void setId(UUID id) {
         this.id = id;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,5 +53,4 @@ public class SubscriptionType {
     public int hashCode() {
         return Objects.hash(id, name, price);
     }
-
 }

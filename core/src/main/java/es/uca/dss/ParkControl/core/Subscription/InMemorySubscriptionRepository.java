@@ -59,4 +59,12 @@ public class InMemorySubscriptionRepository implements SubscriptionRepository{
         }
         return null;
     }
+
+    @Override
+    public Subscription findSubscriptionByVehicleId(UUID vehicleId) {
+        return subscriptions.stream()
+                .filter(subscription -> subscription.getVehicle().getId().equals(vehicleId))
+                .findFirst()
+                .orElse(null);
+    }
 }

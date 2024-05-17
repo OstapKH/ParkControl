@@ -4,11 +4,6 @@ import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.LocalDate;
-import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
-
 public class SubscriptionTest {
     private Subscription subscription;
     private Vehicle vehicle;

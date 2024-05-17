@@ -1,8 +1,11 @@
 package es.uca.dss.ParkControl.core.Transaction;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import java.time.LocalDate;
 import java.util.UUID;
+
 import static org.junit.Assert.assertEquals;
 public class TransactionTest {
 

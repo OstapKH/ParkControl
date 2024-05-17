@@ -1,12 +1,17 @@
 package es.uca.dss.ParkControl.core.Vehicle;
 
-import com.beust.jcommander.internal.Nullable;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
+@Entity
+@Table(name = "vehicles")
 public class Vehicle {
+    @Id
     private UUID id;
+
     private String registrationNumber;
+
     public String getRegistrationNumber() {
         return registrationNumber;
     }

@@ -1,7 +1,5 @@
 package es.uca.dss.ParkControl.core.Ticket;
 
-import es.uca.dss.ParkControl.core.Report.Report;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -46,6 +44,17 @@ public class InMemoryTicketRepository implements TicketRepository{
         List<Ticket> allTickets = new ArrayList<>();
         for (Ticket ticket : tickets) {
             if (ticket.getVehicle().getRegistrationNumber().equals(registrationNumber)) {
+                allTickets.add(ticket);
+            }
+        }
+        return allTickets;
+    }
+
+    @Override
+    public List<Ticket> findByAllByVehicleId(UUID vehicleId) {
+        List<Ticket> allTickets = new ArrayList<>();
+        for (Ticket ticket : tickets) {
+            if (ticket.getVehicle().getId().equals(vehicleId)) {
                 allTickets.add(ticket);
             }
         }

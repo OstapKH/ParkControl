@@ -1,9 +1,12 @@
 package es.uca.dss.ParkControl.core.Subscription;
 
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class SubscriptionService {
     private SubscriptionRepository repository;
 
@@ -25,6 +28,11 @@ public class SubscriptionService {
 
     public boolean isValidSubscriptionAvailable(String registrationNumber){
         Subscription subscription = repository.findSubscriptionByRegistrationNumber(registrationNumber);
+        return subscription!= null && subscription.getDateOfPurchase().isBefore(LocalDateTime.now());
+    }
+
+    public boolean isValidSubscriptionAvailable(UUID vehicleId){
+        Subscription subscription = repository.findSubscriptionByVehicleId(vehicleId);
         return subscription!= null && subscription.getDateOfPurchase().isBefore(LocalDateTime.now());
     }
 

@@ -1,9 +1,12 @@
 package es.uca.dss.ParkControl.core.Vehicle;
 
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.UUID;
 
-public class    VehicleService {
+@Service
+public class VehicleService {
     private VehicleRepository repository;
 
     public VehicleService(VehicleRepository repository) {

@@ -35,6 +35,16 @@ public class InMemoryPlanRepository implements PlanRepository {
     }
 
     @Override
+    public Plan findByName(String name) {
+        for (Plan plan : plans) {
+            if (plan.getPlanName().equals(name)) {
+                return plan;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public List<Plan> findAll() {
         return plans;
     }

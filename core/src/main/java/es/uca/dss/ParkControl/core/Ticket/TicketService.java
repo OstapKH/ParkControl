@@ -1,13 +1,14 @@
 package es.uca.dss.ParkControl.core.Ticket;
 
 import es.uca.dss.ParkControl.core.QRCodeGeneration.QRCodeGenerator;
-import es.uca.dss.ParkControl.core.Report.Report;
+import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class TicketService {
     private TicketRepository repository;
 
@@ -27,8 +28,8 @@ public class TicketService {
         return repository.findAll();
     }
 
-    public Ticket getLatestTicket(String registrationNumber) {
-        List<Ticket> tickets = repository.findByAllByRegistrationNumber(registrationNumber);
+    public Ticket getLatestTicket(UUID vehicleId) {
+        List<Ticket> tickets = repository.findByAllByVehicleId(vehicleId);
         return tickets.get(tickets.size() - 1);
     }
 

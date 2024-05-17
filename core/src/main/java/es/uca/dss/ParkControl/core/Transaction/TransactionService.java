@@ -1,8 +1,11 @@
 package es.uca.dss.ParkControl.core.Transaction;
 
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class TransactionService {
     private TransactionRepository repository;
 
