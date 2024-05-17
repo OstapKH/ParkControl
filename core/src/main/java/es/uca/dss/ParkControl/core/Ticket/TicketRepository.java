@@ -9,4 +9,5 @@ public interface TicketRepository {
     List<Ticket> findAll();
     void deleteById(UUID id);
     List<Ticket> findByAllByRegistrationNumber(String registrationNumber);
+    List<Ticket> findByAllByVehicleId(UUID vehicleId);
 }

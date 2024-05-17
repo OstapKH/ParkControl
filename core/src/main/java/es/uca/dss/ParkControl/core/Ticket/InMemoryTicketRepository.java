@@ -50,4 +50,15 @@ public class InMemoryTicketRepository implements TicketRepository{
         return allTickets;
     }
 
+    @Override
+    public List<Ticket> findByAllByVehicleId(UUID vehicleId) {
+        List<Ticket> allTickets = new ArrayList<>();
+        for (Ticket ticket : tickets) {
+            if (ticket.getVehicle().getId().equals(vehicleId)) {
+                allTickets.add(ticket);
+            }
+        }
+        return allTickets;
+    }
+
 }

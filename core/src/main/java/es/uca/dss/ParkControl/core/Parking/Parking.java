@@ -1,5 +1,6 @@
 package es.uca.dss.ParkControl.core.Parking;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
 import jakarta.persistence.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,13 +15,14 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class Parking {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+    @Column(unique = true)
     private String name;
     private String zipCode;
     private int maxNumberOfSpaces;
     private int currentAvailableNumberOfSpaces;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Vehicle> allocatedVehicles = new ArrayList<>();
 

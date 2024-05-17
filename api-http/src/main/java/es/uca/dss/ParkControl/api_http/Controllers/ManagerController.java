@@ -40,7 +40,7 @@ public class ManagerController {
     }
 
     // Method to change parking details
-    @PutMapping("/parking/{id}")
+    @PatchMapping("/parking/{id}")
     public void changeParkingDetails(@PathVariable UUID id, @RequestBody ParkingUpdateRequest request) {
         parkingManagementService.changeParkingDetails(id, request.getName(), request.getMaxNumberOfSpaces(), request.getZipCode());
     }

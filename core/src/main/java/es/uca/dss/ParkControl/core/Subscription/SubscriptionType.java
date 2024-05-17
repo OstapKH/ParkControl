@@ -9,7 +9,6 @@ import java.util.UUID;
 @Table(name = "subscription_types")
 public class SubscriptionType {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @Column(unique = true)

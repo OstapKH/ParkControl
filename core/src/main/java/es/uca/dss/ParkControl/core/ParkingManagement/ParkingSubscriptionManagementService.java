@@ -7,6 +7,7 @@ import es.uca.dss.ParkControl.core.Vehicle.VehicleService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -84,7 +85,7 @@ public class ParkingSubscriptionManagementService {
         }
     }
 
-    public Iterable<SubscriptionType> getAllSubscriptionTypes() {
+    public List<SubscriptionType> getAllSubscriptionTypes() {
         return subscriptionTypeService.getAllSubscriptions();
     }
 

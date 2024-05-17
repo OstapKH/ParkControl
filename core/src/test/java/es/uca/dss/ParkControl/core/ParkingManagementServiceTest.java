@@ -15,6 +15,7 @@ import es.uca.dss.ParkControl.core.Ticket.InMemoryTicketRepository;
 import es.uca.dss.ParkControl.core.Ticket.Ticket;
 import es.uca.dss.ParkControl.core.Transaction.InMemoryTransactionRepository;
 import es.uca.dss.ParkControl.core.Vehicle.InMemoryVehicleRepository;
+import es.uca.dss.ParkControl.core.Vehicle.VehicleService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +49,7 @@ public class ParkingManagementServiceTest {
         InMemoryRecordRepository inMemoryRecordRepository = new InMemoryRecordRepository();
 
         parkingManagementService = new ParkingManagementService(inMemoryParkingRepository);
-        parkingEntranceAndExitManagementService = new ParkingEntranceAndExitManagementService(inMemoryParkingRepository, inMemoryVehicleRepository, inMemoryTicketRepository, inMemoryRecordRepository, inMemorySubscriptionRepository);
+        parkingEntranceAndExitManagementService = new ParkingEntranceAndExitManagementService(inMemoryParkingRepository, inMemoryVehicleRepository, inMemoryTicketRepository, inMemoryRecordRepository, inMemorySubscriptionRepository, inMemoryPlanRepository);
         parkingPaymentManagementService = new ParkingPaymentManagementService(inMemorySubscriptionRepository, inMemoryTransactionRepository, inMemoryTicketRepository);
         parkingStatisticsManagementService = new ParkingStatisticsManagementService(inMemoryRecordRepository);
         parkingSubscriptionManagementService = new ParkingSubscriptionManagementService(inMemorySubscriptionRepository, inMemoryVehicleRepository, inMemorySubscriptionTypeRepository);
@@ -143,10 +144,11 @@ public class ParkingManagementServiceTest {
         String registrationNumber = "ABC123";
         Optional<Ticket> ticketOptional = parkingEntranceAndExitManagementService.addVehicleToParking(parkingId, registrationNumber);
         Ticket ticket = ticketOptional.get();
+
         parkingPaymentManagementService.paymentOfTicketByCard(ticket.getId());
 
         // Act
-        boolean isExitPermitted = parkingEntranceAndExitManagementService.vehicleExit(parkingId, registrationNumber);
+        boolean isExitPermitted = parkingEntranceAndExitManagementService.vehicleExit(parkingId, ticket.getVehicle().getId());
 
         // Assert
         Assert.assertTrue(isExitPermitted);

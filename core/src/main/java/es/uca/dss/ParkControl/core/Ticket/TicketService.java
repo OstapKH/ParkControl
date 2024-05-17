@@ -28,8 +28,8 @@ public class TicketService {
         return repository.findAll();
     }
 
-    public Ticket getLatestTicket(String registrationNumber) {
-        List<Ticket> tickets = repository.findByAllByRegistrationNumber(registrationNumber);
+    public Ticket getLatestTicket(UUID vehicleId) {
+        List<Ticket> tickets = repository.findByAllByVehicleId(vehicleId);
         return tickets.get(tickets.size() - 1);
     }
 

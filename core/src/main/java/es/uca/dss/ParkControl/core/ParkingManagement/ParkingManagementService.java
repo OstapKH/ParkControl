@@ -40,6 +40,12 @@ public class ParkingManagementService {
             parking.setName(newName);
             parking.setZipCode(newZipCode);
             parking.setMaxNumberOfSpaces(newAmountOfSpaces);
+            if (newAmountOfSpaces - parking.getAllocatedVehicles().size() < 0) {
+                parking.setCurrentAvailableNumberOfSpaces(0);
+            } else {
+                parking.setCurrentAvailableNumberOfSpaces(newAmountOfSpaces);
+            }
+            parkingService.saveParking(parking);
         }
     }
 

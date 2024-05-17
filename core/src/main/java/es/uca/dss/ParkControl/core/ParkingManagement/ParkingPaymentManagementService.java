@@ -42,6 +42,7 @@ public class ParkingPaymentManagementService {
         transaction.setDone(true);
         transactionService.createTransaction(transaction);
         subscription.setDateOfPurchase(LocalDateTime.now());
+        subscriptionService.createSubscription(subscription);
     }
 
     // Method to simulate payment of a subscription by cash
@@ -59,6 +60,7 @@ public class ParkingPaymentManagementService {
         transaction.setDone(true);
         transactionService.createTransaction(transaction);
         subscription.setDateOfPurchase(LocalDateTime.now());
+        subscriptionService.createSubscription(subscription);
         // If user pays more than the ticket price, we return the change
         return amount - subscriptionPrice;
     }
@@ -72,8 +74,9 @@ public class ParkingPaymentManagementService {
         transaction.setConceptID(ticketId);
         // We suppose that payment is successful and done by card
         transaction.setDone(true);
-        transactionService.createTransaction(transaction);
         ticket.setDateOfPayment(LocalDateTime.now());
+        ticketService.createTicket(ticket);
+        transactionService.createTransaction(transaction);
     }
 
     // Method that simulates payment by cash
@@ -82,16 +85,17 @@ public class ParkingPaymentManagementService {
         double ticketPrice = getTicketPrice(ticketId);
         // If user pays less than the ticket price, we return negative value
         if (amount < ticketPrice) {
-            return ticketPrice - amount;
+            return amount - ticketPrice;
         }
         Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
         transaction.setAmountOfPayment(amount);
         transaction.setConceptID(ticketId);
         transaction.setDone(true);
-        transactionService.createTransaction(transaction);
         ticket.setDateOfPayment(LocalDateTime.now());
         // If user pays more than the ticket price, we return the change
+        transactionService.createTransaction(transaction);
+        ticketService.createTicket(ticket);
         return amount - ticketPrice;
     }
 

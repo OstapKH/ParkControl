@@ -12,7 +12,6 @@ import java.util.UUID;
 @Table(name = "records")
 public class Record {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @ManyToOne

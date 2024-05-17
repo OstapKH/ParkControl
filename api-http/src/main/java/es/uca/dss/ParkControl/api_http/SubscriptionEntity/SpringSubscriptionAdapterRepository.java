@@ -12,10 +12,12 @@ import java.util.UUID;
 @Repository
 public class SpringSubscriptionAdapterRepository implements SubscriptionRepository {
     private final SpringSubscriptionJpaRepository repository;
+
     @Autowired
     public SpringSubscriptionAdapterRepository(SpringSubscriptionJpaRepository repository) {
         this.repository = repository;
     }
+
     @Override
     public void save(Subscription subscription) {
         repository.save(subscription);
@@ -52,6 +54,17 @@ public class SpringSubscriptionAdapterRepository implements SubscriptionReposito
         List<Subscription> allSubscriptions = repository.findAll();
         for (Subscription subscription : allSubscriptions) {
             if (subscription.getVehicle().getRegistrationNumber().equals(registrationNumber)) {
+                return subscription;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Subscription findSubscriptionByVehicleId(UUID vehicleId) {
+        List<Subscription> allSubscriptions = repository.findAll();
+        for (Subscription subscription : allSubscriptions) {
+            if (subscription.getVehicle().getId().equals(vehicleId)) {
                 return subscription;
             }
         }

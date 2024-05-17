@@ -31,6 +31,11 @@ public class SubscriptionService {
         return subscription!= null && subscription.getDateOfPurchase().isBefore(LocalDateTime.now());
     }
 
+    public boolean isValidSubscriptionAvailable(UUID vehicleId){
+        Subscription subscription = repository.findSubscriptionByVehicleId(vehicleId);
+        return subscription!= null && subscription.getDateOfPurchase().isBefore(LocalDateTime.now());
+    }
+
     public List<Subscription> getAllSubscriptions() {
         return repository.findAll();
     }

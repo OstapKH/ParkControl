@@ -1,13 +1,16 @@
 package es.uca.dss.ParkControl.api_http.Controllers;
 
+import es.uca.dss.ParkControl.api_http.Controllers.RequestBodies.TicketIdRequestBody;
+import es.uca.dss.ParkControl.api_http.Controllers.RequestBodies.VehicleRegistrationNumberRequestBody;
 import es.uca.dss.ParkControl.core.ParkingManagement.*;
 import es.uca.dss.ParkControl.core.Subscription.Subscription;
 import es.uca.dss.ParkControl.core.Subscription.SubscriptionType;
-import es.uca.dss.ParkControl.core.Subscription.SubscriptionTypeService;
 import es.uca.dss.ParkControl.core.Ticket.Ticket;
+import es.uca.dss.ParkControl.core.Vehicle.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,12 +28,14 @@ public class UserController {
 
     @Autowired
     private ParkingSubscriptionManagementService parkingSubscriptionManagementService;
+    @Autowired
+    private VehicleService vehicleService;
 
     // Method to get a ticket when car enters
     @PostMapping("/parking/{parkingId}/vehicles/enters")
-    public Ticket addVehicleToParking(@PathVariable UUID parkingId, @RequestParam(required = false) String registrationNumber) {
-        if (registrationNumber != null) {
-            Optional<Ticket> ticket = parkingEntranceAndExitManagementService.addVehicleToParking(parkingId, registrationNumber);
+    public Ticket addVehicleToParking(@PathVariable UUID parkingId, @RequestBody(required = false) VehicleRegistrationNumberRequestBody vehicleRegistrationNumberRequestBody) {
+        if (vehicleRegistrationNumberRequestBody != null) {
+            Optional<Ticket> ticket = parkingEntranceAndExitManagementService.addVehicleToParking(parkingId, vehicleRegistrationNumberRequestBody.getRegistrationNumber());
             return ticket.orElse(null);
         } else {
             Optional<Ticket> ticket = parkingEntranceAndExitManagementService.addVehicleToParking(parkingId);
@@ -58,11 +63,11 @@ public class UserController {
 
     // Method to exit parking
     @DeleteMapping("/parking/{parkingId}/vehicles/exits")
-    public boolean exitParking(@PathVariable UUID parkingId, @RequestParam(required = false) String registrationNumber, @RequestParam(required = false) UUID ticketId) {
-        if (registrationNumber != null) {
-            return parkingEntranceAndExitManagementService.vehicleExit(parkingId, registrationNumber);
+    public boolean exitParking(@PathVariable UUID parkingId, @RequestBody(required = false) VehicleRegistrationNumberRequestBody vehicleRegistrationNumberRequestBody, @RequestBody(required = false) TicketIdRequestBody ticketIdRequestBody) {
+        if (vehicleRegistrationNumberRequestBody != null) {
+            return parkingEntranceAndExitManagementService.vehicleExit(parkingId, vehicleRegistrationNumberRequestBody.getRegistrationNumber());
         } else {
-            return parkingEntranceAndExitManagementService.vehicleExit(parkingId, parkingTicketManagementService.getTicketById(ticketId));
+            return parkingEntranceAndExitManagementService.vehicleExit(parkingId, parkingTicketManagementService.getTicketById(ticketIdRequestBody.getTicketId()));
         }
     }
 
@@ -74,12 +79,18 @@ public class UserController {
 
     // Method to get list of all available subscriptions plans
     @GetMapping("/subscriptions")
-    public Iterable<SubscriptionType> getAllSubscriptionTypes() {
+    public List<SubscriptionType> getAllSubscriptionTypes() {
         return parkingSubscriptionManagementService.getAllSubscriptionTypes();
     }
 
+    // Method to create subscription type
+    @PostMapping("/subscription/create")
+    public UUID createSubscriptionType(@RequestBody SubscriptionTypeCreateRequest request) {
+        return parkingSubscriptionManagementService.createSubscriptionType(request.getName(), request.getPrice());
+    }
+
     // Method to create subscription for a vehicle
-    @PostMapping("/subscription")
+    @PostMapping("/subscription/subscribe")
     public Subscription createSubscription(@RequestParam String registrationNumber, @RequestParam String subscriptionTypeName) {
         SubscriptionType subscriptionType = parkingSubscriptionManagementService.getSubscriptionTypeByName(subscriptionTypeName);
         if (subscriptionType == null) {
@@ -100,5 +111,25 @@ public class UserController {
         return parkingPaymentManagementService.paymentOfSubscriptionByCash(subscriptionId, amount);
     }
 
+    public static class SubscriptionTypeCreateRequest {
+        private String name;
+        private double price;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+
+        public void setPrice(double price) {
+            this.price = price;
+        }
+    }
 
 }

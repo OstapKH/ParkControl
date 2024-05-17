@@ -3,6 +3,8 @@ package es.uca.dss.ParkControl.core.ParkingManagement;
 import es.uca.dss.ParkControl.core.Parking.ParkingRepository;
 import es.uca.dss.ParkControl.core.Parking.ParkingService;
 import es.uca.dss.ParkControl.core.Plan.Plan;
+import es.uca.dss.ParkControl.core.Plan.PlanRepository;
+import es.uca.dss.ParkControl.core.Plan.PlanService;
 import es.uca.dss.ParkControl.core.Plan.PlanType;
 import es.uca.dss.ParkControl.core.Record.Record;
 import es.uca.dss.ParkControl.core.Record.RecordRepository;
@@ -23,6 +25,7 @@ import java.util.UUID;
 
 @Service
 public class ParkingEntranceAndExitManagementService {
+    private final PlanService planService;
     private ParkingService parkingService;
     private VehicleService vehicleService;
     private TicketService ticketService;
@@ -30,12 +33,13 @@ public class ParkingEntranceAndExitManagementService {
 
     private SubscriptionService subscriptionService;
 
-    public ParkingEntranceAndExitManagementService(ParkingRepository parkingRepository, VehicleRepository vehicleRepository, TicketRepository ticketRepository, RecordRepository recordRepository, SubscriptionRepository subscriptionRepository) {
+    public ParkingEntranceAndExitManagementService(ParkingRepository parkingRepository, VehicleRepository vehicleRepository, TicketRepository ticketRepository, RecordRepository recordRepository, SubscriptionRepository subscriptionRepository, PlanRepository planRepository) {
         this.parkingService = new ParkingService(parkingRepository);
         this.vehicleService = new VehicleService(vehicleRepository);
         this.ticketService = new TicketService(ticketRepository);
         this.recordService = new RecordService(recordRepository);
         this.subscriptionService = new SubscriptionService(subscriptionRepository);
+        this.planService = new PlanService(planRepository);
     }
 
 
@@ -62,6 +66,7 @@ public class ParkingEntranceAndExitManagementService {
         plan.setPlanType(PlanType.MINUTES);
         plan.setId(UUID.randomUUID());
         plan.setPrice(0.2);
+        planService.createPlan(plan);
         ticket.setPlan(plan);
         ticketService.createTicket(ticket);
         Record record = new Record();
@@ -92,6 +97,7 @@ public class ParkingEntranceAndExitManagementService {
         plan.setPlanType(PlanType.MINUTES);
         plan.setId(UUID.randomUUID());
         plan.setPrice(0.2);
+        planService.createPlan(plan);
         ticket.setPlan(plan);
         ticketService.createTicket(ticket);
         Record record = new Record();
@@ -104,20 +110,21 @@ public class ParkingEntranceAndExitManagementService {
     }
 
     // Method to simulate a vehicle with registration number exiting the parking
-    public boolean vehicleExit(UUID parkingId, String registrationNumber) {
+    public boolean vehicleExit(UUID parkingId, String vehicleRegistrationNumber) {
         boolean isExitPermitted = false;
-        Ticket ticket = ticketService.getLatestTicket(registrationNumber);
+        UUID vehicleId = vehicleService.getVehicleByRegistrationNumber(vehicleRegistrationNumber).getId();
+        Ticket ticket = ticketService.getLatestTicket(vehicleId);
         if (ticket != null) {
             boolean isIdEqual = ticket.getParking().getId().equals(parkingId);
             boolean isDateBefore = ticket.getDateOfPayment().isBefore(LocalDateTime.now().plusMinutes(10));
             if (isIdEqual && isDateBefore) {
                 isExitPermitted = true;
-                removeVehicleFromParking(parkingId, registrationNumber);
+                removeVehicleFromParking(parkingId, vehicleId);
                 return isExitPermitted;
             }
-            if (subscriptionService.isValidSubscriptionAvailable(registrationNumber)) {
+            if (subscriptionService.isValidSubscriptionAvailable(vehicleId)) {
                 isExitPermitted = true;
-                removeVehicleFromParking(parkingId, registrationNumber);
+                removeVehicleFromParking(parkingId, vehicleId);
                 return isExitPermitted;
             }
         }
@@ -128,14 +135,15 @@ public class ParkingEntranceAndExitManagementService {
     public boolean vehicleExit(UUID parkingId, Ticket ticket) {
         boolean isExitPermitted = false;
         if (ticket != null) {
-            if (ticket.getParking().getId().equals(parkingId) && ticket.getDateOfPayment().isBefore(LocalDateTime.now().plusMinutes(10))) {
+            if (ticket.getParking().getId().equals(parkingId) && !
+                    (ticket.getDateOfPayment().plusMinutes(10).isAfter(LocalDateTime.now()))) {
                 isExitPermitted = true;
-                removeVehicleFromParking(parkingId, ticket.getVehicle().getRegistrationNumber());
+                removeVehicleFromParking(parkingId, ticket.getVehicle().getId());
                 return isExitPermitted;
             }
             if (subscriptionService.isValidSubscriptionAvailable(ticket.getVehicle().getRegistrationNumber())) {
                 isExitPermitted = true;
-                removeVehicleFromParking(parkingId, ticket.getVehicle().getRegistrationNumber());
+                removeVehicleFromParking(parkingId, ticket.getVehicle().getId());
                 return isExitPermitted;
             }
         }
@@ -143,8 +151,8 @@ public class ParkingEntranceAndExitManagementService {
     }
 
     // Inner method to remove a vehicle from the parking
-    private void removeVehicleFromParking(UUID parkingId, String registrationNumber) {
-        Vehicle vehicle = vehicleService.getVehicleByRegistrationNumber(registrationNumber);
+    private void removeVehicleFromParking(UUID parkingId, UUID vehicleId) {
+        Vehicle vehicle = vehicleService.getVehicle(vehicleId);
         parkingService.removeVehicleFromParking(parkingId, vehicle);
     }
 

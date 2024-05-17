@@ -60,6 +60,7 @@ public class ParkingService {
             List<Vehicle> vehicles = parking.getAllocatedVehicles();
             vehicles.remove(vehicle);
             parking.setAllocatedVehicles(vehicles);
+            parking.setCurrentAvailableNumberOfSpaces(parking.getCurrentAvailableNumberOfSpaces() + 1);
             parkingRepository.save(parking);
         } else {
             System.out.println("Parking not found with id: " + parkingId);

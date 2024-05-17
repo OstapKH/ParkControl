@@ -12,7 +12,6 @@ import java.util.UUID;
 @Table(name = "transactions")
 public class Transaction {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private double amountOfPayment;
     private boolean isDone;

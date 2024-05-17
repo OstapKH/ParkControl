@@ -13,9 +13,10 @@ import java.util.UUID;
 @Table(name = "plans")
 public class Plan {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
     private String name;
+
     private double price;
 
     @Enumerated(EnumType.STRING)

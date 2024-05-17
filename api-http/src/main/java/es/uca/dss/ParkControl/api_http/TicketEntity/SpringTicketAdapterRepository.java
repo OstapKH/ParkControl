@@ -50,4 +50,16 @@ public class SpringTicketAdapterRepository implements TicketRepository {
         return tickets;
     }
 
+    @Override
+    public List<Ticket> findByAllByVehicleId(UUID vehicleId) {
+        List<Ticket> allTickets = springTicketJpaRepository.findAll();
+        List<Ticket> tickets = new ArrayList<>();
+        for (Ticket ticket : allTickets) {
+            if (ticket.getVehicle().getId().equals(vehicleId)) {
+                tickets.add(ticket);
+            }
+        }
+        return tickets;
+    }
+
 }
