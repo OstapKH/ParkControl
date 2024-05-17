@@ -148,7 +148,7 @@ public class ParkingManagementServiceTest {
         parkingPaymentManagementService.paymentOfTicketByCard(ticket.getId());
 
         // Act
-        boolean isExitPermitted = parkingEntranceAndExitManagementService.vehicleExit(parkingId, ticket.getVehicle().getId());
+        boolean isExitPermitted = parkingEntranceAndExitManagementService.vehicleExit(parkingId, ticket.getVehicle().getRegistrationNumber());
 
         // Assert
         Assert.assertTrue(isExitPermitted);
