@@ -6,7 +6,6 @@ import es.uca.dss.ParkControl.core.ParkingManagement.*;
 import es.uca.dss.ParkControl.core.Subscription.Subscription;
 import es.uca.dss.ParkControl.core.Subscription.SubscriptionType;
 import es.uca.dss.ParkControl.core.Ticket.Ticket;
-import es.uca.dss.ParkControl.core.Vehicle.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,17 +18,12 @@ import java.util.UUID;
 public class UserController {
     @Autowired
     private ParkingEntranceAndExitManagementService parkingEntranceAndExitManagementService;
-
     @Autowired
     private ParkingPaymentManagementService parkingPaymentManagementService;
-
     @Autowired
     private ParkingTicketManagementService parkingTicketManagementService;
-
     @Autowired
     private ParkingSubscriptionManagementService parkingSubscriptionManagementService;
-    @Autowired
-    private VehicleService vehicleService;
 
     // Method to get a ticket when car enters
     @PostMapping("/parking/{parkingId}/vehicles/enters")
@@ -83,11 +77,6 @@ public class UserController {
         return parkingSubscriptionManagementService.getAllSubscriptionTypes();
     }
 
-    // Method to create subscription type
-    @PostMapping("/subscription/create")
-    public UUID createSubscriptionType(@RequestBody SubscriptionTypeCreateRequest request) {
-        return parkingSubscriptionManagementService.createSubscriptionType(request.getName(), request.getPrice());
-    }
 
     // Method to create subscription for a vehicle
     @PostMapping("/subscription/subscribe")

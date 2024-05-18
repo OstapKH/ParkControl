@@ -13,8 +13,8 @@ import com.vaadin.flow.router.RouteAlias;
 import java.util.UUID;
 
 @PageTitle("ParkControl Web UI")
-@Route(value = "")
-@RouteAlias(value = "")
+@Route(value = "home")
+@RouteAlias(value = "home")
 
 public class StartPageView extends VerticalLayout {
 
@@ -41,7 +41,7 @@ public class StartPageView extends VerticalLayout {
 
         // Create the User button
         Button userButton = new Button("User");
-        userButton.addClickListener(e -> { /* Your logic here */ });
+        userButton.addClickListener(e -> { UI.getCurrent().navigate("user-options"); });
 
         // Add buttons to the HorizontalLayout
         buttonLayout.add(managerButton, userButton);

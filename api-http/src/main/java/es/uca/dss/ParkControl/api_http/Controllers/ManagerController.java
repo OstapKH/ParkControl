@@ -33,6 +33,9 @@ public class ManagerController {
     @Autowired
     private ParkingPlanManagementService planManagementService;
 
+    @Autowired
+    private ParkingSubscriptionManagementService parkingSubscriptionManagementService;
+
     // Method to create a parking
     @PostMapping("/parking")
     public UUID createParking(@RequestBody ParkingCreationRequest request) {

@@ -1,16 +1,16 @@
-package es.uca.dss.parkcontrol.views.manageroptionspage;
+package es.uca.dss.parkcontrol.views.optionspage;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 
-
-@PageTitle("ParkControl Web UI")
+@PageTitle("Manager Section")
 @Route(value = "manager-options")
 
 public class ManagerOptionsView extends VerticalLayout {
@@ -18,10 +18,7 @@ public class ManagerOptionsView extends VerticalLayout {
     public ManagerOptionsView() {
         setSpacing(false);
 
-
-
         add(new H1("Manager Options"));
-
 
         VerticalLayout verticalLayout = new VerticalLayout();
 
@@ -124,8 +121,16 @@ public class ManagerOptionsView extends VerticalLayout {
         buttonFifthRowLayout.add(getAllPlans, createPlan, changePlanPrice, changePlanName, deletePlan);
         verticalLayout.add(buttonFifthRowLayout);
 
-        add(verticalLayout);
+        Button goToStartPage = new Button("Go to Start page");
 
+        goToStartPage.addClickListener(e -> {
+            UI.getCurrent().navigate("home");
+        });
+        goToStartPage.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_CONTRAST);
+
+
+        verticalLayout.add(goToStartPage);
+        add(verticalLayout);
 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
