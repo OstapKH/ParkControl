@@ -3,5 +3,5 @@
 ### Participantes
 - Ostap Kilbasovych
   
-Nuestro proyecto trata todos los aspectos (Desde los requisitos a la implementación) de un sistema de aparcamientos privados de Software libre y gratuito
+El proyecto trata todos los aspectos (Desde los requisitos a la implementación) de un sistema de aparcamientos privados de Software libre y gratuito
  
