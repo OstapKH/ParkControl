@@ -5,12 +5,15 @@ import es.uca.dss.ParkControl.core.ParkingManagement.ParkingManagementService;
 import es.uca.dss.ParkControl.core.ParkingManagement.ParkingPlanManagementService;
 import es.uca.dss.ParkControl.core.ParkingManagement.ParkingStatisticsManagementService;
 import es.uca.dss.ParkControl.core.ParkingManagement.ParkingSubscriptionManagementService;
+import es.uca.dss.ParkControl.core.Plan.Plan;
 import es.uca.dss.ParkControl.core.Record.Record;
 import es.uca.dss.ParkControl.core.Subscription.Subscription;
 import es.uca.dss.ParkControl.core.Subscription.SubscriptionType;
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
@@ -33,6 +36,9 @@ public class ManagerController {
     @Autowired
     private ParkingPlanManagementService planManagementService;
 
+    @Autowired
+    private ParkingSubscriptionManagementService parkingSubscriptionManagementService;
+
     // Method to create a parking
     @PostMapping("/parking")
     public UUID createParking(@RequestBody ParkingCreationRequest request) {
@@ -45,10 +51,10 @@ public class ManagerController {
         parkingManagementService.changeParkingDetails(id, request.getName(), request.getMaxNumberOfSpaces(), request.getZipCode());
     }
 
-    //Method to get a parking by id
     @GetMapping("/parking/{id}")
     public Parking getParkingById(@PathVariable UUID id) {
-        return parkingManagementService.getParkingById(id);
+        return parkingManagementService.getParkingById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Parking not found"));
     }
 
     // Method to get all parkings
@@ -70,31 +76,27 @@ public class ManagerController {
     }
 
     // Method to get entries statistics by day
-    @GetMapping("/parking/{id}/statistics/entries/day")
-    public Optional<List<Record>> getEntriesStatisticByDay(@PathVariable UUID id, @RequestParam("day") LocalDateTime dayDate) {
-        return statisticsManagementService.getEntriesStatisticByDay(id, dayDate);
+    @GetMapping("/parking/{id}/statistics/entries")
+    public Optional<List<Record>> getEntriesStatisticByDayOrMonth(@PathVariable UUID id, @RequestParam(value = "dayDate", required = false) LocalDateTime dayDate, @RequestParam(value = "monthDate", required = false) LocalDateTime monthDate) {
+        if (dayDate != null) {
+            return statisticsManagementService.getEntriesStatisticByDay(id, dayDate);
+        } else if (monthDate != null) {
+            return statisticsManagementService.getEntriesStatisticByMonth(id, monthDate);
+        } else return Optional.empty();
     }
 
     // Method to get exits statistics by day
-    @GetMapping("/parking/{id}/statistics/exits/day")
-    public Optional<List<Record>> getExitsStatisticByDay(@PathVariable UUID id, @RequestParam("dayDate") LocalDateTime dayDate) {
-        return statisticsManagementService.getExitsStatisticByDay(id, dayDate);
-    }
-
-    // Method to get entries statistics by month
-    @GetMapping("/parking/{id}/statistics/entries/month")
-    public Optional<List<Record>> getEntriesStatisticByMonth(@PathVariable UUID id, @RequestParam("monthDate") LocalDateTime monthDate) {
-        return statisticsManagementService.getEntriesStatisticByMonth(id, monthDate);
-    }
-
-    // Method to get exits statistics by month
-    @GetMapping("/parking/{id}/statistics/exits/month")
-    public Optional<List<Record>> getExitsStatisticByMonth(@PathVariable UUID id, @RequestParam("monthDate") LocalDateTime monthDate) {
-        return statisticsManagementService.getExitsStatisticByMonth(id, monthDate);
+    @GetMapping("/parking/{id}/statistics/exits")
+    public Optional<List<Record>> getExitsStatisticByDayOrMonth(@PathVariable UUID id, @RequestParam(value = "dayDate", required = false) LocalDateTime dayDate, @RequestParam(value = "monthDate", required = false) LocalDateTime monthDate) {
+        if (dayDate != null) {
+            return statisticsManagementService.getExitsStatisticByDay(id, dayDate);
+        } else if (monthDate != null) {
+            return statisticsManagementService.getExitsStatisticByMonth(id, monthDate);
+        } else return Optional.empty();
     }
 
     // Method to change the price of a subscription type
-    @PutMapping("/subscription/{name}")
+    @PatchMapping("/subscription/{name}")
     public void changeSubscriptionTypePrice(@PathVariable String name, @RequestParam("newPrice") double newPrice) {
         subscriptionManagementService.changeSubscriptionTypePrice(name, newPrice);
     }
@@ -123,10 +125,16 @@ public class ManagerController {
         return subscriptionManagementService.getAllSubscriptions();
     }
 
+    // Method to get all plans
+    @GetMapping("/plans")
+    public Iterable<Plan> getAllPlans() {
+        return planManagementService.getAllPlans();
+    }
+
     // Method to create a plan
     @PostMapping("/plan")
-    public void createPlan(@RequestParam("name") String name, @RequestParam("price") double price) {
-        planManagementService.createPlan(name, price);
+    public void createPlan(@RequestParam("name") String name, @RequestParam("price") double price, @RequestParam("planType") String planType){
+        planManagementService.createPlan(name, price, planType);
     }
 
     // Method to change plan price
@@ -188,6 +196,12 @@ public class ManagerController {
         private String zipCode;
 
         public ParkingUpdateRequest() {
+        }
+
+        public ParkingUpdateRequest(String zipCode, String name, int maxNumberOfSpaces) {
+            this.zipCode = zipCode;
+            this.name = name;
+            this.maxNumberOfSpaces = maxNumberOfSpaces;
         }
 
         public String getName() {

@@ -1,5 +1,6 @@
 package es.uca.dss.ParkControl.core.ParkingManagement;
 
+import es.uca.dss.ParkControl.core.Parking.Parking;
 import es.uca.dss.ParkControl.core.Parking.ParkingRepository;
 import es.uca.dss.ParkControl.core.Parking.ParkingService;
 import es.uca.dss.ParkControl.core.Plan.Plan;
@@ -20,6 +21,7 @@ import es.uca.dss.ParkControl.core.Vehicle.VehicleService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,98 +47,111 @@ public class ParkingEntranceAndExitManagementService {
 
     // Method to simulate a vehicle with registration number entering the parking
     public Optional<Ticket> addVehicleToParking(UUID parkingId, String registrationNumber) {
-        if (parkingService.getParkingById(parkingId).getCurrentAvailableNumberOfSpaces() <= 0) {
-            return Optional.empty();
+        Optional<Parking> optionalParking = parkingService.getParkingById(parkingId);
+        if (optionalParking.isPresent() && optionalParking.get().getCurrentAvailableNumberOfSpaces() > 0) {
+            Vehicle vehicle = vehicleService.getVehicleByRegistrationNumber(registrationNumber);
+            if (vehicle == null) {
+                vehicle = new Vehicle();
+                vehicle.setId(UUID.randomUUID());
+                vehicle.setRegistrationNumber(registrationNumber);
+                vehicleService.createVehicle(vehicle);
+            }
+            parkingService.addVehicleToParking(parkingId, vehicle);
+            Ticket ticket = new Ticket();
+            ticket.setId(UUID.randomUUID());
+            ticket.setVehicle(vehicle);
+            ticket.setParking(optionalParking.get());
+            ticket.setDateOfIssue(LocalDateTime.now());
+            Plan plan = new Plan();
+            plan.setPlanName("Basic");
+            plan.setPlanType(PlanType.MINUTES);
+            plan.setId(UUID.randomUUID());
+            plan.setPrice(0.2);
+            planService.createPlan(plan);
+            ticket.setPlan(plan);
+            ticketService.createTicket(ticket);
+            Record record = new Record();
+            record.setId(UUID.randomUUID());
+            record.setTicket(ticket);
+            record.setDateOfEntry(LocalDateTime.now());
+            record.setParking(optionalParking.get());
+            recordService.createRecord(record);
+            return Optional.of(ticket);
         }
-        Vehicle vehicle = vehicleService.getVehicleByRegistrationNumber(registrationNumber);
-        if (vehicle == null) {
-            vehicle = new Vehicle();
-            vehicle.setId(UUID.randomUUID());
-            vehicle.setRegistrationNumber(registrationNumber);
-            vehicleService.createVehicle(vehicle);
-        }
-        parkingService.addVehicleToParking(parkingId, vehicle);
-        Ticket ticket = new Ticket();
-        ticket.setId(UUID.randomUUID());
-        ticket.setVehicle(vehicle);
-        ticket.setParking(parkingService.getParkingById(parkingId));
-        ticket.setDateOfIssue(LocalDateTime.now());
-        Plan plan = new Plan();
-        plan.setPlanName("Basic");
-        plan.setPlanType(PlanType.MINUTES);
-        plan.setId(UUID.randomUUID());
-        plan.setPrice(0.2);
-        planService.createPlan(plan);
-        ticket.setPlan(plan);
-        ticketService.createTicket(ticket);
-        Record record = new Record();
-        record.setId(UUID.randomUUID());
-        record.setTicket(ticket);
-        record.setDateOfEntry(LocalDateTime.now());
-        record.setParking(parkingService.getParkingById(parkingId));
-        recordService.createRecord(record);
-        return Optional.of(ticket);
+        return Optional.empty();
     }
 
     // Method to simulate a vehicle without registration number entering the parking
     public Optional<Ticket> addVehicleToParking(UUID parkingId) {
-        if (parkingService.getParkingById(parkingId).getCurrentAvailableNumberOfSpaces() <= 0) {
-            return Optional.empty();
+        Optional<Parking> optionalParking = parkingService.getParkingById(parkingId);
+        if (optionalParking.isPresent() && optionalParking.get().getCurrentAvailableNumberOfSpaces() > 0) {
+            Vehicle vehicle = new Vehicle();
+            vehicle.setId(UUID.randomUUID());
+            vehicleService.createVehicle(vehicle);
+            parkingService.addVehicleToParking(parkingId, vehicle);
+            Ticket ticket = new Ticket();
+            ticket.setId(UUID.randomUUID());
+            ticket.setVehicle(vehicle);
+            ticket.setParking(optionalParking.get());
+            ticket.setDateOfIssue(LocalDateTime.now());
+            Plan plan = new Plan();
+            plan.setPlanName("Basic");
+            plan.setPlanType(PlanType.MINUTES);
+            plan.setId(UUID.randomUUID());
+            plan.setPrice(0.2);
+            planService.createPlan(plan);
+            ticket.setPlan(plan);
+            ticketService.createTicket(ticket);
+            Record record = new Record();
+            record.setId(UUID.randomUUID());
+            record.setTicket(ticket);
+            record.setDateOfEntry(LocalDateTime.now());
+            record.setParking(optionalParking.get());
+            recordService.createRecord(record);
+            return Optional.of(ticket);
         }
-        Vehicle vehicle = new Vehicle();
-        vehicle.setId(UUID.randomUUID());
-        vehicleService.createVehicle(vehicle);
-        parkingService.addVehicleToParking(parkingId, vehicle);
-        Ticket ticket = new Ticket();
-        ticket.setId(UUID.randomUUID());
-        ticket.setVehicle(vehicle);
-        ticket.setParking(parkingService.getParkingById(parkingId));
-        ticket.setDateOfIssue(LocalDateTime.now());
-        Plan plan = new Plan();
-        plan.setPlanName("Basic");
-        plan.setPlanType(PlanType.MINUTES);
-        plan.setId(UUID.randomUUID());
-        plan.setPrice(0.2);
-        planService.createPlan(plan);
-        ticket.setPlan(plan);
-        ticketService.createTicket(ticket);
-        Record record = new Record();
-        record.setId(UUID.randomUUID());
-        record.setTicket(ticket);
-        record.setDateOfEntry(LocalDateTime.now());
-        record.setParking(parkingService.getParkingById(parkingId));
-        recordService.createRecord(record);
-        return Optional.of(ticket);
+        return Optional.empty();
     }
 
     // Method to simulate a vehicle with registration number exiting the parking
     public boolean vehicleExit(UUID parkingId, String vehicleRegistrationNumber) {
         boolean isExitPermitted = false;
-        UUID vehicleId = vehicleService.getVehicleByRegistrationNumber(vehicleRegistrationNumber).getId();
-        Ticket ticket = ticketService.getLatestTicket(vehicleId);
-        if (ticket != null) {
-            boolean isIdEqual = ticket.getParking().getId().equals(parkingId);
-            boolean isDateBefore = ticket.getDateOfPayment().isBefore(LocalDateTime.now().plusMinutes(10));
-            if (isIdEqual && isDateBefore) {
-                isExitPermitted = true;
-                removeVehicleFromParking(parkingId, vehicleId);
-                return isExitPermitted;
-            }
-            if (subscriptionService.isValidSubscriptionAvailable(vehicleId)) {
-                isExitPermitted = true;
-                removeVehicleFromParking(parkingId, vehicleId);
-                return isExitPermitted;
+        Optional<Vehicle> optionalVehicle = Optional.ofNullable(vehicleService.getVehicleByRegistrationNumber(vehicleRegistrationNumber));
+        if (optionalVehicle.isPresent()) {
+            UUID vehicleId = optionalVehicle.get().getId();
+            Optional<Ticket> optionalTicket = Optional.ofNullable(ticketService.getLatestTicket(vehicleId));
+            if (optionalTicket.isPresent()) {
+                boolean isIdEqual = optionalTicket.get().getParking().getId().equals(parkingId);
+                if (optionalTicket.get().getDateOfPayment().equals(null)){
+                    return isExitPermitted;
+                }
+                boolean isDateBefore = optionalTicket.get().getDateOfPayment().isBefore(LocalDateTime.now().plusMinutes(10));
+                if (isIdEqual && isDateBefore) {
+                    isExitPermitted = true;
+                    removeVehicleFromParking(optionalTicket.get().getParking().getId(), vehicleId);
+                    return isExitPermitted;
+                }
+                if (subscriptionService.isValidSubscriptionAvailable(vehicleId)) {
+                    isExitPermitted = true;
+                    removeVehicleFromParking(optionalTicket.get().getParking().getId(), vehicleId);
+                    return isExitPermitted;
+                }
             }
         }
         return isExitPermitted;
     }
 
     // Method to simulate a vehicle with ticket exiting the parking
-    public boolean vehicleExit(UUID parkingId, Ticket ticket) {
+    public boolean vehicleExit(UUID parkingId, UUID ticketId) {
         boolean isExitPermitted = false;
+        Ticket ticket = ticketService.getTicket(ticketId);
         if (ticket != null) {
-            if (ticket.getParking().getId().equals(parkingId) && !
-                    (ticket.getDateOfPayment().plusMinutes(10).isAfter(LocalDateTime.now()))) {
+            if (ticket.getDateOfPayment() == null){
+                return isExitPermitted;
+            }
+            boolean isDateBefore = ticket.getDateOfPayment().isBefore(LocalDateTime.now().plusMinutes(10));
+            if (ticket.getParking().getId().equals(parkingId) && isDateBefore)
+            {
                 isExitPermitted = true;
                 removeVehicleFromParking(parkingId, ticket.getVehicle().getId());
                 return isExitPermitted;
@@ -152,8 +167,12 @@ public class ParkingEntranceAndExitManagementService {
 
     // Inner method to remove a vehicle from the parking
     private void removeVehicleFromParking(UUID parkingId, UUID vehicleId) {
-        Vehicle vehicle = vehicleService.getVehicle(vehicleId);
-        parkingService.removeVehicleFromParking(parkingId, vehicle);
+        Optional<Vehicle> optionalVehicle = Optional.ofNullable(vehicleService.getVehicle(vehicleId));
+        List<Record> records = recordService.findByVehicle(optionalVehicle.get().getId());
+        Record record = records.get(records.size() - 1);
+        record.setDateOfExit(LocalDateTime.now());
+        recordService.createRecord(record);
+        parkingService.removeVehicleFromParking(parkingId, optionalVehicle.get());
     }
 
 }

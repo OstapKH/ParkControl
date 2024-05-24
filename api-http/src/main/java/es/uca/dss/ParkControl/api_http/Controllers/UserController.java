@@ -1,15 +1,17 @@
 package es.uca.dss.ParkControl.api_http.Controllers;
 
 import es.uca.dss.ParkControl.api_http.Controllers.RequestBodies.TicketIdRequestBody;
-import es.uca.dss.ParkControl.api_http.Controllers.RequestBodies.VehicleRegistrationNumberRequestBody;
+import es.uca.dss.ParkControl.api_http.Controllers.RequestBodies.VehicleEnterRequestBody;
+import es.uca.dss.ParkControl.api_http.Controllers.RequestBodies.VehicleExitRequestBody;
 import es.uca.dss.ParkControl.core.ParkingManagement.*;
 import es.uca.dss.ParkControl.core.Subscription.Subscription;
 import es.uca.dss.ParkControl.core.Subscription.SubscriptionType;
 import es.uca.dss.ParkControl.core.Ticket.Ticket;
-import es.uca.dss.ParkControl.core.Vehicle.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,38 +21,33 @@ import java.util.UUID;
 public class UserController {
     @Autowired
     private ParkingEntranceAndExitManagementService parkingEntranceAndExitManagementService;
-
     @Autowired
     private ParkingPaymentManagementService parkingPaymentManagementService;
-
     @Autowired
     private ParkingTicketManagementService parkingTicketManagementService;
-
     @Autowired
     private ParkingSubscriptionManagementService parkingSubscriptionManagementService;
-    @Autowired
-    private VehicleService vehicleService;
 
     // Method to get a ticket when car enters
-    @PostMapping("/parking/{parkingId}/vehicles/enters")
-    public Ticket addVehicleToParking(@PathVariable UUID parkingId, @RequestBody(required = false) VehicleRegistrationNumberRequestBody vehicleRegistrationNumberRequestBody) {
-        if (vehicleRegistrationNumberRequestBody != null) {
-            Optional<Ticket> ticket = parkingEntranceAndExitManagementService.addVehicleToParking(parkingId, vehicleRegistrationNumberRequestBody.getRegistrationNumber());
+    @PostMapping("/parking/vehicles/enters")
+    public Ticket addVehicleToParking(@RequestBody(required = true) VehicleEnterRequestBody vehicleEnterRequestBody) {
+        if (vehicleEnterRequestBody.getRegistrationNumber() != null) {
+            Optional<Ticket> ticket = parkingEntranceAndExitManagementService.addVehicleToParking(vehicleEnterRequestBody.getParkingId(), vehicleEnterRequestBody.getRegistrationNumber());
             return ticket.orElse(null);
         } else {
-            Optional<Ticket> ticket = parkingEntranceAndExitManagementService.addVehicleToParking(parkingId);
+            Optional<Ticket> ticket = parkingEntranceAndExitManagementService.addVehicleToParking(vehicleEnterRequestBody.getParkingId());
             return ticket.orElse(null);
         }
     }
 
     // Method to pay ticket by card
-    @PostMapping("/parking/{parkingId}/payment/card/{ticketId}")
+    @PostMapping("/parking/payment/card/{ticketId}")
     public void paymentOfTicketByCard(@PathVariable UUID ticketId) {
         parkingPaymentManagementService.paymentOfTicketByCard(ticketId);
     }
 
     // Method to pay ticket by cash
-    @PostMapping("/parking/{parkingId}/payment/cash/{ticketId}")
+    @PostMapping("/parking/payment/cash/{ticketId}")
     public double paymentOfTicketByCash(@PathVariable UUID ticketId, @RequestParam double amount) {
         return parkingPaymentManagementService.paymentOfTicketByCash(ticketId, amount);
     }
@@ -62,12 +59,12 @@ public class UserController {
     }
 
     // Method to exit parking
-    @DeleteMapping("/parking/{parkingId}/vehicles/exits")
-    public boolean exitParking(@PathVariable UUID parkingId, @RequestBody(required = false) VehicleRegistrationNumberRequestBody vehicleRegistrationNumberRequestBody, @RequestBody(required = false) TicketIdRequestBody ticketIdRequestBody) {
-        if (vehicleRegistrationNumberRequestBody != null) {
-            return parkingEntranceAndExitManagementService.vehicleExit(parkingId, vehicleRegistrationNumberRequestBody.getRegistrationNumber());
+    @PostMapping("/parking/{parkingId}/vehicles/exits")
+    public boolean exitParking(@PathVariable UUID parkingId, @RequestParam UUID ticketId, @RequestParam(required = false) String registrationNumber) {
+        if (registrationNumber != null) {
+            return parkingEntranceAndExitManagementService.vehicleExit(parkingId, registrationNumber);
         } else {
-            return parkingEntranceAndExitManagementService.vehicleExit(parkingId, parkingTicketManagementService.getTicketById(ticketIdRequestBody.getTicketId()));
+            return parkingEntranceAndExitManagementService.vehicleExit(parkingId, ticketId);
         }
     }
 
@@ -83,11 +80,6 @@ public class UserController {
         return parkingSubscriptionManagementService.getAllSubscriptionTypes();
     }
 
-    // Method to create subscription type
-    @PostMapping("/subscription/create")
-    public UUID createSubscriptionType(@RequestBody SubscriptionTypeCreateRequest request) {
-        return parkingSubscriptionManagementService.createSubscriptionType(request.getName(), request.getPrice());
-    }
 
     // Method to create subscription for a vehicle
     @PostMapping("/subscription/subscribe")

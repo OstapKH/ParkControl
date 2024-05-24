@@ -3,13 +3,13 @@ package es.uca.dss.ParkControl.api_http.Controllers.RequestBodies;
 import java.util.UUID;
 
 public class TicketIdRequestBody {
-    private UUID ticketId;
+    private String ticketId;
 
-    public UUID getTicketId() {
+    public String getTicketId() {
         return ticketId;
     }
 
-    public void setTicketId(UUID ticketId) {
+    public void setTicketId(String ticketId) {
         this.ticketId = ticketId;
     }
 }

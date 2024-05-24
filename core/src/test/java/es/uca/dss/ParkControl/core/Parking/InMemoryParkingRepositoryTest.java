@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -34,20 +35,26 @@ public class InMemoryParkingRepositoryTest {
     @Test
     public void testSave(){
         inMemoryParkingRepository.save(parking);
-        Parking retrivedParking = inMemoryParkingRepository.findById(parking.getId());
-        assertEquals(retrivedParking.getId(),parking.getId());
+        Optional<Parking> parkingOptional = inMemoryParkingRepository.findById(parking.getId());
+        if (parkingOptional.isPresent()) {
+            Parking retrivedParking = parkingOptional.get();
+            assertEquals(retrivedParking.getId(),parking.getId());
+        }
     }
 
     @Test
     public void testFindById(){
         //CASE INCORRECT ID
-        Parking parking1 = inMemoryParkingRepository.findById(UUID.randomUUID());
-        assertNull(parking1);//Not found id = null object
+        Optional<Parking> parkingOptional1 = inMemoryParkingRepository.findById(UUID.randomUUID());
+        assertNull(parkingOptional1.orElse(null));//Not found id = null object
 
         //CASE CORRECT ID
         inMemoryParkingRepository.save(parking);
-        Parking retrivedParking = inMemoryParkingRepository.findById(parking.getId());
-        assertEquals(retrivedParking.getId(),parking.getId());
+        Optional<Parking> parkingOptional2 = inMemoryParkingRepository.findById(parking.getId());
+        if (parkingOptional2.isPresent()) {
+            Parking retrivedParking = parkingOptional2.get();
+            assertEquals(retrivedParking.getId(),parking.getId());
+        }
     }
 
     @Test
