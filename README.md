@@ -15,7 +15,7 @@ El proyecto trata todos los aspectos (Desde los requisitos a la implementación)
 El proyecto se divide en 3 paquetes importantes.
 
  1. Core
- 2. API-Http
+ 2. API-HTTP
  3. Web-UI
 
 Para ejecutar el proyecto localmente, nesecitará descargar el archivo del proyecto y después:
