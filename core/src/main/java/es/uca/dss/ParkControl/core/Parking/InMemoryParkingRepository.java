@@ -2,6 +2,7 @@ package es.uca.dss.ParkControl.core.Parking;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class InMemoryParkingRepository implements ParkingRepository{
@@ -23,13 +24,13 @@ public class InMemoryParkingRepository implements ParkingRepository{
         parkings.add(parking); // If parking with given ID doesn't exist, add it as a new entry
     }
     @Override
-    public Parking findById(UUID id) {
+    public Optional<Parking> findById(UUID id) {
         for (Parking parking : parkings) {
             if (parking.getId().equals(id)) {
-                return parking;
+                return Optional.of(parking);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

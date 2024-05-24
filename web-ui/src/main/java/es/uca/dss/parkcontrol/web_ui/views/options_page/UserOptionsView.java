@@ -1,4 +1,4 @@
-package es.uca.dss.parkcontrol.views.optionspage;
+package es.uca.dss.parkcontrol.web_ui.views.options_page;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -13,7 +13,7 @@ import com.vaadin.flow.router.Route;
 @PageTitle("User Section")
 @Route(value = "user-options")
 
-public class UserOptionsView extends VerticalLayout {
+public class  UserOptionsView extends VerticalLayout {
 
     public UserOptionsView() {
         setSpacing(false);
@@ -25,10 +25,10 @@ public class UserOptionsView extends VerticalLayout {
         buttonFirstRowLayout.setSpacing(true);
 
         Button enterParking = new Button("Enter parking");
-        enterParking.addClickListener(e -> { /* Your logic here */ });
+        enterParking.addClickListener(e -> { UI.getCurrent().navigate("/user/enter-parking");});
 
         Button exitParking = new Button("Exit parking");
-        exitParking.addClickListener(e -> { /* Your logic here */ });
+        exitParking.addClickListener(e -> { UI.getCurrent().navigate("/user/exit-parking");});
 
         buttonFirstRowLayout.add(enterParking, exitParking);
 
@@ -41,13 +41,13 @@ public class UserOptionsView extends VerticalLayout {
         buttonFirstRowLayout.setSpacing(true);
 
         Button getTicketPrice = new Button("Get ticket price");
-        getTicketPrice.addClickListener(e -> { /* Your logic here */ });
+        getTicketPrice.addClickListener(e -> { UI.getCurrent().navigate("/user/get-ticket-price"); });
 
         Button getTicketFullInformation = new Button("Get ticket full information");
-        getTicketFullInformation.addClickListener(e -> { /* Your logic here */ });
+        getTicketFullInformation.addClickListener(e -> { UI.getCurrent().navigate("/user/full-ticket-by-id"); });
 
         Button paymentOfTheTicket = new Button("Payment of the ticket");
-        paymentOfTheTicket.addClickListener(e -> { /* Your logic here */ });
+        paymentOfTheTicket.addClickListener(e -> { UI.getCurrent().navigate("/user/choose-ticket-payment-option"); });
 
         buttonThirdRowLayout.add(getTicketPrice, getTicketFullInformation, paymentOfTheTicket);
         verticalLayout.add(buttonThirdRowLayout);
@@ -58,10 +58,10 @@ public class UserOptionsView extends VerticalLayout {
         buttonFirstRowLayout.setSpacing(true);
 
         Button getAllSubscriptionsPlans = new Button("Get all subscriptions plans");
-        getAllSubscriptionsPlans.addClickListener(e -> { /* Your logic here */ });
+        getAllSubscriptionsPlans.addClickListener(e -> {UI.getCurrent().navigate("/user/all-subscription-plans");});
 
         Button subscribeVehicle = new Button("Subscription and payment");
-        subscribeVehicle.addClickListener(e -> { /* Your logic here */ });
+        subscribeVehicle.addClickListener(e -> { UI.getCurrent().navigate("/user/subscribe-vehicle"); });
 
         buttonFourthRowLayout.add(getAllSubscriptionsPlans, subscribeVehicle);
         verticalLayout.add(buttonFourthRowLayout);

@@ -4,9 +4,12 @@ import es.uca.dss.ParkControl.core.Parking.Parking;
 import es.uca.dss.ParkControl.core.Parking.ParkingRepository;
 import es.uca.dss.ParkControl.core.Parking.ParkingService;
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -35,8 +38,9 @@ public class ParkingManagementService {
 
     // Method to change parking details
     public void changeParkingDetails(UUID id, String newName, int newAmountOfSpaces, String newZipCode) {
-        Parking parking = parkingService.getParkingById(id);
-        if (parking != null) {
+        Optional<Parking> optionalParking = parkingService.getParkingById(id);
+        if (optionalParking.isPresent()) {
+            Parking parking = optionalParking.get();
             parking.setName(newName);
             parking.setZipCode(newZipCode);
             parking.setMaxNumberOfSpaces(newAmountOfSpaces);
@@ -60,11 +64,16 @@ public class ParkingManagementService {
     }
 
     // Method to get all allocated vehicles in a parking
-    public Iterable<Vehicle> getAllAllocatedVehiclesInParking(UUID parkingId) {
-        return parkingService.getParkingById(parkingId).getAllocatedVehicles();
+    public List<Vehicle> getAllAllocatedVehiclesInParking(UUID parkingId) {
+        Optional<Parking> optionalParking = parkingService.getParkingById(parkingId);
+        if (optionalParking.isPresent()) {
+            return optionalParking.get().getAllocatedVehicles();
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Parking not found");
+        }
     }
 
-    public Parking getParkingById(UUID parkingId) {
+    public Optional<Parking> getParkingById(UUID parkingId) {
         return parkingService.getParkingById(parkingId);
     }
     // TODO Check if Optional would be suitable here.

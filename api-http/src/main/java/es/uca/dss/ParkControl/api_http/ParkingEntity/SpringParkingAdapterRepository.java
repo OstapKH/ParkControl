@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -23,8 +24,8 @@ public class SpringParkingAdapterRepository implements ParkingRepository {
     }
 
     @Override
-    public Parking findById(UUID id) {
-        return springParkingJpaRepository.findById(id).orElse(null);
+    public Optional<Parking> findById(UUID id) {
+        return springParkingJpaRepository.findById(id);
     }
 
     @Override

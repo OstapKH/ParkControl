@@ -35,6 +35,7 @@ public class ParkingSubscriptionManagementService {
             vehicle.setId(UUID.randomUUID());
             vehicle.setRegistrationNumber(registrationNumber);
             vehicleService.createVehicle(vehicle);
+            subscription.setVehicle(vehicle);
         } else {
             subscription.setVehicle(vehicle);
         }

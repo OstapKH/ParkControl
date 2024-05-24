@@ -39,46 +39,50 @@ public class RecordService {
         return recordRepository.findByParking(parking);
     }
 
-    public List<Record> getEntriesByDay(UUID parkingId, LocalDateTime dayDate){
+    public List<Record> getEntriesByDay(UUID parkingId, LocalDateTime dayDate) {
         List<Record> recordList = new ArrayList<>();
         List<Record> recordsByParking = recordRepository.findByParking(parkingId);
-        for (Record record : recordsByParking){
-            if (record.getDateOfEntry().isAfter(dayDate) && record.getDateOfEntry().isBefore(dayDate.plusDays(1))){
+        for (Record record : recordsByParking) {
+            if (record.getDateOfEntry().isAfter(dayDate) && record.getDateOfEntry().isBefore(dayDate.plusDays(1))) {
                 recordList.add(record);
             }
         }
         return recordList;
     }
 
-    public List<Record> getExitsByDay(UUID parkingId, LocalDateTime dayDate){
+    public List<Record> getExitsByDay(UUID parkingId, LocalDateTime dayDate) {
         List<Record> recordList = new ArrayList<>();
         List<Record> recordsByParking = recordRepository.findByParking(parkingId);
-        for (Record record : recordsByParking){
-            if (record.getDateOfExit().isAfter(dayDate) && record.getDateOfExit().isBefore(dayDate.plusDays(1))){
-                recordList.add(record);
+        for (Record record : recordsByParking) {
+            if (record.getDateOfExit() != null) {
+                if (record.getDateOfExit().isAfter(dayDate) && record.getDateOfExit().isBefore(dayDate.plusDays(1))) {
+                    recordList.add(record);
+                }
             }
         }
         return recordList;
     }
 
 
-    public List<Record> getEntriesByMonth(UUID parkingId, LocalDateTime monthDate){
+    public List<Record> getEntriesByMonth(UUID parkingId, LocalDateTime monthDate) {
         List<Record> recordList = new ArrayList<>();
         List<Record> recordsByParking = recordRepository.findByParking(parkingId);
-        for (Record record : recordsByParking){
-            if (record.getDateOfEntry().isAfter(monthDate) && record.getDateOfEntry().isBefore(monthDate.plusDays(1))){
+        for (Record record : recordsByParking) {
+            if (record.getDateOfEntry().isAfter(monthDate) && record.getDateOfEntry().isBefore(monthDate.plusMonths(1))) {
                 recordList.add(record);
             }
         }
         return recordList;
     }
 
-    public List<Record> getExitsByMonth(UUID parkingId, LocalDateTime monthDate){
+    public List<Record> getExitsByMonth(UUID parkingId, LocalDateTime monthDate) {
         List<Record> recordList = new ArrayList<>();
         List<Record> recordsByParking = recordRepository.findByParking(parkingId);
-        for (Record record : recordsByParking){
-            if (record.getDateOfExit().isAfter(monthDate) && record.getDateOfExit().isBefore(monthDate.plusMonths(1))){
-                recordList.add(record);
+        for (Record record : recordsByParking) {
+            if (record.getDateOfExit() != null) {
+                if (record.getDateOfExit().isAfter(monthDate) && record.getDateOfExit().isBefore(monthDate.plusMonths(1))) {
+                    recordList.add(record);
+                }
             }
         }
         return recordList;

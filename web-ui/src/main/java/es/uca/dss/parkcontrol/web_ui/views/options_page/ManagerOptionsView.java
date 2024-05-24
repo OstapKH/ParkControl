@@ -1,4 +1,4 @@
-package es.uca.dss.parkcontrol.views.optionspage;
+package es.uca.dss.parkcontrol.web_ui.views.options_page;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -27,16 +27,24 @@ public class ManagerOptionsView extends VerticalLayout {
         buttonFirstRowLayout.setSpacing(true);
 
         Button getAllParkings = new Button("Get all parkings");
-        getAllParkings.addClickListener(e -> { /* Your logic here */ });
+        getAllParkings.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/all-parkings");
+        });
 
         Button addParking = new Button("Add parking");
-        addParking.addClickListener(e -> { /* Your logic here */ });
+        addParking.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/add-parking");
+        });
 
         Button getParkingById = new Button("Get parking by id");
-        getParkingById.addClickListener(e -> { /* Your logic here */ });
+        getParkingById.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/parking-info-by-id");
+        });
 
         Button changeParkingDetails = new Button("Change parking details");
-        changeParkingDetails.addClickListener(e -> { /* Your logic here */ });
+        changeParkingDetails.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/change-parking-details");
+        });
 
         buttonFirstRowLayout.add(getAllParkings, addParking, getParkingById, changeParkingDetails);
 
@@ -45,10 +53,14 @@ public class ManagerOptionsView extends VerticalLayout {
         buttonFirstRowLayout.setSpacing(true);
 
         Button deleteParking = new Button("Delete parking");
-        deleteParking.addClickListener(e -> { /* Your logic here */ });
+        deleteParking.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/delete-parking");
+        });
 
         Button getAllVehiclesInParking = new Button("Get all vehicles in parking");
-        getAllVehiclesInParking.addClickListener(e -> { /* Your logic here */ });
+        getAllVehiclesInParking.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/vehicles-in-selected-parking");
+        });
 
         buttonSecondRowLayout.add(deleteParking, getAllVehiclesInParking);
 
@@ -61,16 +73,24 @@ public class ManagerOptionsView extends VerticalLayout {
         buttonFirstRowLayout.setSpacing(true);
 
         Button getEntriesStatisticByDay = new Button("Get entries statistic by day");
-        getEntriesStatisticByDay.addClickListener(e -> { /* Your logic here */ });
+        getEntriesStatisticByDay.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/entries-stat-by-day");
+        });
 
         Button getExitsStatisticByDay = new Button("Get exits statistic by day");
-        getExitsStatisticByDay.addClickListener(e -> { /* Your logic here */ });
+        getExitsStatisticByDay.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/exits-stat-by-day");
+        });
 
         Button getEntriesStatisticByMonth = new Button("Get entries statistic by month");
-        getEntriesStatisticByMonth.addClickListener(e -> { /* Your logic here */ });
+        getEntriesStatisticByMonth.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/entries-stat-by-month");
+        });
 
         Button getExitsStatisticByMonth = new Button("Get exits statistic by month");
-        getExitsStatisticByMonth.addClickListener(e -> { /* Your logic here */ });
+        getExitsStatisticByMonth.addClickListener(ee -> {
+            UI.getCurrent().navigate("/manager/exits-stat-by-month");
+        });
 
         buttonThirdRowLayout.add(getEntriesStatisticByDay, getExitsStatisticByDay, getEntriesStatisticByMonth, getExitsStatisticByMonth);
         verticalLayout.add(buttonThirdRowLayout);
@@ -81,19 +101,29 @@ public class ManagerOptionsView extends VerticalLayout {
         buttonFirstRowLayout.setSpacing(true);
 
         Button getAllSubscriptions = new Button("Get all subscriptions");
-        getAllSubscriptions.addClickListener(e -> { /* Your logic here */ });
+        getAllSubscriptions.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/all-subscriptions");
+        });
 
         Button getAllSubscriptionTypes = new Button("Get all subscription types");
-        getAllSubscriptionTypes.addClickListener(e -> { /* Your logic here */ });
+        getAllSubscriptionTypes.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/all-subscription-types");
+        });
 
         Button createSubscriptionType = new Button("Create subscription type");
-        createSubscriptionType.addClickListener(e -> { /* Your logic here */ });
+        createSubscriptionType.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/create-subscription-type");
+        });
 
         Button changeSubscriptionTypePrice = new Button("Change subscription type price");
-        changeSubscriptionTypePrice.addClickListener(e -> { /* Your logic here */ });
+        changeSubscriptionTypePrice.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/change-subscription-type-price");
+        });
 
         Button deleteSubscriptionType = new Button("Delete subscription type");
-        deleteSubscriptionType.addClickListener(e -> { /* Your logic here */ });
+        deleteSubscriptionType.addClickListener(e -> {
+            UI.getCurrent().navigate("/manager/delete-subscription-type");
+        });
 
         buttonFourthRowLayout.add(getAllSubscriptions, getAllSubscriptionTypes, createSubscriptionType, changeSubscriptionTypePrice, deleteSubscriptionType);
         verticalLayout.add(buttonFourthRowLayout);
@@ -104,19 +134,19 @@ public class ManagerOptionsView extends VerticalLayout {
         buttonFirstRowLayout.setSpacing(true);
 
         Button getAllPlans = new Button("Get all plans");
-        getAllPlans.addClickListener(e -> { /* Your logic here */ });
+        getAllPlans.addClickListener(e -> {UI.getCurrent().navigate("/manager/all-plans"); });
 
         Button createPlan = new Button("Create plan");
-        createPlan.addClickListener(e -> { /* Your logic here */ });
+        createPlan.addClickListener(e -> { UI.getCurrent().navigate("/manager/create-plan"); });
 
         Button changePlanPrice = new Button("Change plan price");
-        changePlanPrice.addClickListener(e -> { /* Your logic here */ });
+        changePlanPrice.addClickListener(e -> { UI.getCurrent().navigate("/manager/change-plan-price"); });
 
         Button changePlanName = new Button("Change plan name");
-        changePlanName.addClickListener(e -> { /* Your logic here */ });
+        changePlanName.addClickListener(e -> { UI.getCurrent().navigate("/manager/change-plan-name"); });
 
         Button deletePlan = new Button("Delete plan");
-        deletePlan.addClickListener(e -> { /* Your logic here */ });
+        deletePlan.addClickListener(e -> { UI.getCurrent().navigate("/manager/delete-plan"); });
 
         buttonFifthRowLayout.add(getAllPlans, createPlan, changePlanPrice, changePlanName, deletePlan);
         verticalLayout.add(buttonFifthRowLayout);

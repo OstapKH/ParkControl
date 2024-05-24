@@ -4,6 +4,7 @@ import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,7 +19,7 @@ public class ParkingService {
         parkingRepository.save(parking);
     }
 
-    public Parking getParkingById(UUID id) {
+    public Optional<Parking> getParkingById(UUID id) {
         return parkingRepository.findById(id);
     }
 
@@ -31,72 +32,71 @@ public class ParkingService {
     }
 
     public void changeParkingName(UUID id, String newName) {
-        Parking parking = parkingRepository.findById(id);
-        if (parking != null) {
-            parking.setName(newName);
-            parkingRepository.save(parking);
+        Optional<Parking> parking = parkingRepository.findById(id);
+        if (parking.isPresent()) {
+            parking.get().setName(newName);
+            parkingRepository.save(parking.get());
         } else {
             System.out.println("Parking not found with id: " + id);
         }
     }
 
     public void addVehicleToParking(UUID parkingId, Vehicle vehicle) {
-
-        Parking parking = parkingRepository.findById(parkingId);
-        if (parking != null) {
-            List<Vehicle> vehicles = parking.getAllocatedVehicles();
+        Optional<Parking> parking = parkingRepository.findById(parkingId);
+        if (parking.isPresent()) {
+            List<Vehicle> vehicles = parking.get().getAllocatedVehicles();
             vehicles.add(vehicle);
-            parking.setAllocatedVehicles(vehicles);
-            parking.setCurrentAvailableNumberOfSpaces(parking.getCurrentAvailableNumberOfSpaces() - 1);
-            parkingRepository.save(parking);
+            parking.get().setAllocatedVehicles(vehicles);
+            parking.get().setCurrentAvailableNumberOfSpaces(parking.get().getCurrentAvailableNumberOfSpaces() - 1);
+            parkingRepository.save(parking.get());
         } else {
             System.out.println("Parking not found with id: " + parkingId);
         }
     }
 
     public void removeVehicleFromParking(UUID parkingId, Vehicle vehicle) {
-        Parking parking = parkingRepository.findById(parkingId);
-        if (parking != null) {
-            List<Vehicle> vehicles = parking.getAllocatedVehicles();
+        Optional<Parking> parking = parkingRepository.findById(parkingId);
+        if (parking.isPresent()) {
+            List<Vehicle> vehicles = parking.get().getAllocatedVehicles();
             vehicles.remove(vehicle);
-            parking.setAllocatedVehicles(vehicles);
-            parking.setCurrentAvailableNumberOfSpaces(parking.getCurrentAvailableNumberOfSpaces() + 1);
-            parkingRepository.save(parking);
+            parking.get().setAllocatedVehicles(vehicles);
+            parking.get().setCurrentAvailableNumberOfSpaces(parking.get().getCurrentAvailableNumberOfSpaces() + 1);
+            parkingRepository.save(parking.get());
         } else {
             System.out.println("Parking not found with id: " + parkingId);
         }
     }
 
     public void changeParkingMaxSpaces(UUID id, int newMaxSpaces) {
-        Parking parking = parkingRepository.findById(id);
-        if (parking != null) {
-            parking.setMaxNumberOfSpaces(newMaxSpaces);
-            parkingRepository.save(parking);
+        Optional<Parking> parking = parkingRepository.findById(id);
+        if (parking.isPresent()) {
+            parking.get().setMaxNumberOfSpaces(newMaxSpaces);
+            parkingRepository.save(parking.get());
         } else {
             System.out.println("Parking not found with id: " + id);
         }
     }
 
     public void incrementCurrentAvailableSpaces(UUID parkingId) {
-        Parking parking = parkingRepository.findById(parkingId);
-        if (parking != null) {
-            int currentAvailableSpaces = parking.getCurrentAvailableNumberOfSpaces();
-            parking.setCurrentAvailableNumberOfSpaces(++currentAvailableSpaces);
-            parkingRepository.save(parking);
+        Optional<Parking> parking = parkingRepository.findById(parkingId);
+        if (parking.isPresent()) {
+            int currentAvailableSpaces = parking.get().getCurrentAvailableNumberOfSpaces();
+            parking.get().setCurrentAvailableNumberOfSpaces(++currentAvailableSpaces);
+            parkingRepository.save(parking.get());
         } else {
             System.out.println("Parking not found with id: " + parkingId);
         }
     }
 
     public void decrementCurrentAvailableSpaces(UUID parkingId) {
-        Parking parking = parkingRepository.findById(parkingId);
-        if (parking != null) {
-            int currentAvailableSpaces = parking.getCurrentAvailableNumberOfSpaces();
+        Optional<Parking> parking = parkingRepository.findById(parkingId);
+        if (parking.isPresent()) {
+            int currentAvailableSpaces = parking.get().getCurrentAvailableNumberOfSpaces();
             if (--currentAvailableSpaces < 0) {
                 System.out.println("Maximal amount of cars in the parking: " + parkingId);
             } else {
-                parking.setCurrentAvailableNumberOfSpaces(currentAvailableSpaces);
-                parkingRepository.save(parking);
+                parking.get().setCurrentAvailableNumberOfSpaces(currentAvailableSpaces);
+                parkingRepository.save(parking.get());
             }
         } else {
             System.out.println("Parking not found with id: " + parkingId);

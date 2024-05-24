@@ -1,4 +1,4 @@
-package es.uca.dss.parkcontrol.views.startpage;
+package es.uca.dss.parkcontrol.web_ui.views.manager_pages.start_page;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -13,7 +13,7 @@ import com.vaadin.flow.router.RouteAlias;
 import java.util.UUID;
 
 @PageTitle("ParkControl Web UI")
-@Route(value = "home")
+@Route(value = "")
 @RouteAlias(value = "home")
 
 public class StartPageView extends VerticalLayout {

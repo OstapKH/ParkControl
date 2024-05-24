@@ -5,6 +5,7 @@ import es.uca.dss.ParkControl.core.Parking.Parking;
 import es.uca.dss.ParkControl.core.ParkingManagement.*;
 import es.uca.dss.ParkControl.core.Plan.InMemoryPlanRepository;
 import es.uca.dss.ParkControl.core.Plan.Plan;
+import es.uca.dss.ParkControl.core.Plan.PlanService;
 import es.uca.dss.ParkControl.core.Plan.PlanType;
 import es.uca.dss.ParkControl.core.Record.InMemoryRecordRepository;
 import es.uca.dss.ParkControl.core.Subscription.InMemorySubscriptionRepository;
@@ -53,7 +54,8 @@ public class ParkingManagementServiceTest {
         parkingPaymentManagementService = new ParkingPaymentManagementService(inMemorySubscriptionRepository, inMemoryTransactionRepository, inMemoryTicketRepository);
         parkingStatisticsManagementService = new ParkingStatisticsManagementService(inMemoryRecordRepository);
         parkingSubscriptionManagementService = new ParkingSubscriptionManagementService(inMemorySubscriptionRepository, inMemoryVehicleRepository, inMemorySubscriptionTypeRepository);
-        parkingTicketManagementService = new ParkingTicketManagementService(inMemoryTicketRepository);
+        parkingTicketManagementService = new ParkingTicketManagementService(inMemoryTicketRepository, inMemoryPlanRepository);
+
     }
 
     @Test
@@ -67,11 +69,17 @@ public class ParkingManagementServiceTest {
         UUID parkingId = parkingManagementService.createParking(name, maxNumberOfSpaces, zipCode);
 
         // Assert
-        Parking parking = parkingManagementService.getParkingById(parkingId);
-        Assert.assertNotNull(parking);
-        Assert.assertEquals(name, parking.getName());
-        Assert.assertEquals(maxNumberOfSpaces, parking.getMaxNumberOfSpaces());
-        Assert.assertEquals(zipCode, parking.getZipCode());
+
+        Optional<Parking>
+                parking = parkingManagementService.getParkingById(parkingId);
+        if (parking.isPresent()) {
+            Assert.assertNotNull(parking.get());
+            Assert.assertEquals(name, parking.get().getName());
+            Assert.assertEquals(maxNumberOfSpaces, parking.get().getMaxNumberOfSpaces());
+            Assert.assertEquals(zipCode, parking.get().getZipCode());
+        } else {
+            Assert.fail("Parking not found");
+        }
     }
 
     @Test
@@ -90,11 +98,15 @@ public class ParkingManagementServiceTest {
         parkingManagementService.changeParkingDetails(parkingId, newName, newMaxNumberOfSpaces, newZipCode);
 
         // Assert
-        Parking parking = parkingManagementService.getParkingById(parkingId);
-        Assert.assertNotNull(parking);
-        Assert.assertEquals(newName, parking.getName());
-        Assert.assertEquals(newMaxNumberOfSpaces, parking.getMaxNumberOfSpaces());
-        Assert.assertEquals(newZipCode, parking.getZipCode());
+        Optional<Parking> parking = parkingManagementService.getParkingById(parkingId);
+        if (parking.isPresent()) {
+            Assert.assertNotNull(parking.get());
+            Assert.assertEquals(newName, parking.get().getName());
+            Assert.assertEquals(newMaxNumberOfSpaces, parking.get().getMaxNumberOfSpaces());
+            Assert.assertEquals(newZipCode, parking.get().getZipCode());
+        } else
+            Assert.fail("Parking not found");
+
     }
 
     @Test
@@ -167,12 +179,11 @@ public class ParkingManagementServiceTest {
         parkingPaymentManagementService.paymentOfTicketByCard(ticket.getId());
 
         // Act
-        boolean isExitPermitted = parkingEntranceAndExitManagementService.vehicleExit(parkingId, ticket);
+        boolean isExitPermitted = parkingEntranceAndExitManagementService.vehicleExit(parkingId, ticket.getId());
 
         // Assert
         Assert.assertTrue(isExitPermitted);
     }
-
 
 
     @Test
@@ -384,10 +395,14 @@ public class ParkingManagementServiceTest {
             Assert.assertTrue(ticketOptional.isPresent());
         }
 
-        Parking parking = parkingManagementService.getParkingById(parkingId);
+        Optional<Parking> parking = parkingManagementService.getParkingById(parkingId);
         // Assert
         // Check if after entering of 5 vehicles, amount of available spaces was decreased correctly
-        Assert.assertEquals(95, parkingManagementService.getParkingById(parkingId).getCurrentAvailableNumberOfSpaces()); // Check if the number of available spaces is correct
+        if (parking.isPresent()) {
+            Assert.assertEquals(95, parking.get().getCurrentAvailableNumberOfSpaces());
+        } else {
+            Assert.fail("Parking not found");
+        }
     }
 }
 

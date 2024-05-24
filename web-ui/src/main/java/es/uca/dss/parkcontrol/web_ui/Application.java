@@ -1,4 +1,4 @@
-package es.uca.dss.parkcontrol;
+package es.uca.dss.parkcontrol.web_ui;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.theme.Theme;

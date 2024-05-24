@@ -23,7 +23,7 @@ public class Ticket {
     @ManyToOne
     private Plan plan;
 
-    private LocalDateTime dateOfIssue;
+    private LocalDateTime dateOfIssue ;
     private LocalDateTime dateOfPayment;
 
     public UUID getId() {

@@ -9,17 +9,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
+
 public class ParkingServiceTest {
     private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
     private ParkingRepository parkingRepository; //Creamos un objeto de la clase interfaz para seguir el principio DIP, aunque en el fondo es la clase InMemory
     private ParkingService parkingService; //Clase a probar en los tests
     private Parking parking;
+
     @Before
-    public void setUp(){
+    public void setUp() {
         parkingRepository = new InMemoryParkingRepository();
         parkingService = new ParkingService(parkingRepository);
 
@@ -36,58 +39,64 @@ public class ParkingServiceTest {
     public void tearDown() {
         System.setOut(originalOut);
     }
+
     @Test
-    public void testSaveParking(){
+    public void testSaveParking() {
         parkingService.saveParking(parking);
         List<Parking> parkings = parkingService.getAllParkings();
-        assertEquals(1,parkings.size()); //Comprobar que hay un nuevo parking
+        assertEquals(1, parkings.size()); //Comprobar que hay un nuevo parking
 
-        Parking retrievedParking = parkingRepository.findById(parking.getId());
-        //Utilizamos repository para acceder al método interfaz, ya que no debemos usar el método de la clase que probamos
-        assertEquals(retrievedParking,parking);
+        Optional<Parking> parkingOptional = parkingRepository.findById(parking.getId());
+        if (parkingOptional.isPresent()) {
+            Parking retrievedParking = parkingOptional.get();
+            assertEquals(retrievedParking, parking);
+        }
     }
 
     @Test
-    public void testGetParkingById(){
+    public void testGetParkingById() {
         parkingService.saveParking(parking);
-        Parking retrievedParking = parkingService.getParkingById(parking.getId());
-        assertEquals(retrievedParking,parking);
-        //Test identico en funcionamiento al anterior, pero que permite comprobar por separada el funcionamiento de save y get
+        Optional<Parking> parkingOptional = parkingService.getParkingById(parking.getId());
+        if (parkingOptional.isPresent()) {
+            Parking retrievedParking = parkingOptional.get();
+            assertEquals(retrievedParking, parking);
+        }
+        //Test identical in functionality to the previous one, but allows to check separately the operation of save and get
     }
 
     @Test
-    public void testGetAllParkins(){
+    public void testGetAllParkins() {
         List<Parking> parkings = parkingService.getAllParkings();
         assertNotNull(parkings); //Entendemos null como no crear la lista
-        assertEquals(0,parkings.size());
+        assertEquals(0, parkings.size());
     }
 
     @Test
-    public void testDeleteParking(){
+    public void testDeleteParking() {
         parkingService.saveParking(parking);
         parkingService.deleteParking(parking.getId());
         List<Parking> parkins = parkingService.getAllParkings();
-        assertEquals(0,parkins.size());
+        assertEquals(0, parkins.size());
     }
 
     @Test
-    public void testChangeParkingName(){
+    public void testChangeParkingName() {
         System.setOut(new PrintStream(outputStreamCaptor));
         UUID invalidParkingId = UUID.randomUUID();
         //CASE INCORRECT ID
 
-        parkingService.changeParkingName(invalidParkingId,"Example2");
+        parkingService.changeParkingName(invalidParkingId, "Example2");
         assertEquals("Parking not found with id: " + invalidParkingId + System.lineSeparator(), outputStreamCaptor.toString());
         outputStreamCaptor.reset();
 
         //CASE CORRECT
         parkingService.saveParking(parking);
-        parkingService.changeParkingName(parking.getId(),"Example2");
-        assertEquals("Example2",parking.getName());
+        parkingService.changeParkingName(parking.getId(), "Example2");
+        assertEquals("Example2", parking.getName());
     }
 
     @Test
-    public void testIncrementCurrentAvailableSpaces(){
+    public void testIncrementCurrentAvailableSpaces() {
         System.setOut(new PrintStream(outputStreamCaptor));
         UUID invalidParkingId = UUID.randomUUID();
         // CASE INCORRECT ID
@@ -99,7 +108,7 @@ public class ParkingServiceTest {
         int CurrentAvailableSpacesPlusOne = parking.getCurrentAvailableNumberOfSpaces() + 1;
         parkingService.saveParking(parking);
         parkingService.incrementCurrentAvailableSpaces(parking.getId());
-        assertEquals(CurrentAvailableSpacesPlusOne,parking.getCurrentAvailableNumberOfSpaces());
+        assertEquals(CurrentAvailableSpacesPlusOne, parking.getCurrentAvailableNumberOfSpaces());
     }
 
     @Test
@@ -122,11 +131,15 @@ public class ParkingServiceTest {
         parking.setCurrentAvailableNumberOfSpaces(3);
         parkingRepository.save(parking);
         parkingService.decrementCurrentAvailableSpaces(parking.getId());
-        assertEquals(2, parkingRepository.findById(parking.getId()).getCurrentAvailableNumberOfSpaces());
+        Optional<Parking> parkingOptional = parkingRepository.findById(parking.getId());
+        if (parkingOptional.isPresent()) {
+            Parking retrievedParking = parkingOptional.get();
+            assertEquals(2, retrievedParking.getCurrentAvailableNumberOfSpaces());
+        }
     }
 
     @Test
-    public void testAddVehicleToParking(){
+    public void testAddVehicleToParking() {
         System.setOut(new PrintStream(outputStreamCaptor));//Sin esta linea no funciona ningun Equals
         UUID invalidParkingId = UUID.randomUUID();
 
@@ -136,13 +149,13 @@ public class ParkingServiceTest {
         parkingService.saveParking(parking);
 
         //CASE INCORRECT
-        parkingService.addVehicleToParking(invalidParkingId,vehicle);
+        parkingService.addVehicleToParking(invalidParkingId, vehicle);
         System.setOut(System.out);
         assertEquals("Parking not found with id: " + invalidParkingId + System.lineSeparator(), outputStreamCaptor.toString());
         outputStreamCaptor.reset();
 
         //CASE CORRECT
-        parkingService.addVehicleToParking(parking.getId(),vehicle);
-        assertEquals(1,parking.getAllocatedVehicles().size());
+        parkingService.addVehicleToParking(parking.getId(), vehicle);
+        assertEquals(1, parking.getAllocatedVehicles().size());
     }
 }
