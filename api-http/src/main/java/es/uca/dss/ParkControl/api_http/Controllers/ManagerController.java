@@ -10,13 +10,16 @@ import es.uca.dss.ParkControl.core.Record.Record;
 import es.uca.dss.ParkControl.core.Subscription.Subscription;
 import es.uca.dss.ParkControl.core.Subscription.SubscriptionType;
 import es.uca.dss.ParkControl.core.Vehicle.Vehicle;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,48 +39,85 @@ public class ManagerController {
     @Autowired
     private ParkingPlanManagementService planManagementService;
 
-    @Autowired
-    private ParkingSubscriptionManagementService parkingSubscriptionManagementService;
-
-    // Method to create a parking
+    @Operation(summary = "Create a new parking")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Parking created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid request parameters"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PostMapping("/parking")
-    public UUID createParking(@RequestBody ParkingCreationRequest request) {
+    public UUID createParking(@Parameter(description = "Request body for creating a new parking", required = true) @RequestBody ParkingCreationRequest request) {
         return parkingManagementService.createParking(request.getName(), request.getMaxNumberOfSpaces(), request.getZipCode());
     }
 
-    // Method to change parking details
+    @Operation(summary = "Update parking details")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Parking details updated successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid request parameters"),
+        @ApiResponse(responseCode = "404", description = "Parking not found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PatchMapping("/parking/{id}")
-    public void changeParkingDetails(@PathVariable UUID id, @RequestBody ParkingUpdateRequest request) {
+    public void changeParkingDetails(@Parameter(description = "ID of the parking to update", required = true) @PathVariable UUID id, @RequestBody ParkingUpdateRequest request) {
         parkingManagementService.changeParkingDetails(id, request.getName(), request.getMaxNumberOfSpaces(), request.getZipCode());
     }
 
+    @Operation(summary = "Get parking by ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found the parking"),
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
+        @ApiResponse(responseCode = "404", description = "Parking not found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @GetMapping("/parking/{id}")
-    public Parking getParkingById(@PathVariable UUID id) {
+    public Parking getParkingById(@Parameter(description = "ID of the parking to retrieve", required = true) @PathVariable UUID id) {
         return parkingManagementService.getParkingById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Parking not found"));
     }
 
-    // Method to get all parkings
+    @Operation(summary = "Get all parkings")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found all parkings"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @GetMapping("/parking")
     public Iterable<Parking> getAllParkings() {
         return parkingManagementService.getAllParkings();
     }
 
-    // Method to delete a parking
+    @Operation(summary = "Delete a parking")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Parking deleted successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
+        @ApiResponse(responseCode = "404", description = "Parking not found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @DeleteMapping("/parking/{id}")
-    public void deleteParking(@PathVariable UUID id) {
+    public void deleteParking(@Parameter(description = "ID of the parking to delete", required = true) @PathVariable UUID id) {
         parkingManagementService.deleteParking(id);
     }
 
-    // Method to get all vehicles in a parking
+    @Operation(summary = "Get all vehicles in a parking")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found all vehicles in the parking"),
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
+        @ApiResponse(responseCode = "404", description = "Parking not found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @GetMapping("/parking/{id}/vehicles")
-    public Iterable<Vehicle> getAllCarsInParking(@PathVariable UUID id) {
+    public Iterable<Vehicle> getAllCarsInParking(@Parameter(description = "ID of the parking", required = true) @PathVariable UUID id) {
         return parkingManagementService.getAllAllocatedVehiclesInParking(id);
     }
 
-    // Method to get entries statistics by day
+    @Operation(summary = "Get entries statistics by day or month")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found entries statistics"),
+        @ApiResponse(responseCode = "400", description = "Invalid id or date supplied"),
+        @ApiResponse(responseCode = "404", description = "Parking not found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @GetMapping("/parking/{id}/statistics/entries")
-    public Optional<List<Record>> getEntriesStatisticByDayOrMonth(@PathVariable UUID id, @RequestParam(value = "dayDate", required = false) LocalDateTime dayDate, @RequestParam(value = "monthDate", required = false) LocalDateTime monthDate) {
+    public Optional<List<Record>> getEntriesStatisticByDayOrMonth(@Parameter(description = "ID of the parking", required = true) @PathVariable UUID id, @RequestParam(value = "dayDate", required = false) LocalDateTime dayDate, @RequestParam(value = "monthDate", required = false) LocalDateTime monthDate) {
         if (dayDate != null) {
             return statisticsManagementService.getEntriesStatisticByDay(id, dayDate);
         } else if (monthDate != null) {
@@ -85,9 +125,15 @@ public class ManagerController {
         } else return Optional.empty();
     }
 
-    // Method to get exits statistics by day
+    @Operation(summary = "Get exits statistics by day or month")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found exits statistics"),
+        @ApiResponse(responseCode = "400", description = "Invalid id or date supplied"),
+        @ApiResponse(responseCode = "404", description = "Parking not found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @GetMapping("/parking/{id}/statistics/exits")
-    public Optional<List<Record>> getExitsStatisticByDayOrMonth(@PathVariable UUID id, @RequestParam(value = "dayDate", required = false) LocalDateTime dayDate, @RequestParam(value = "monthDate", required = false) LocalDateTime monthDate) {
+    public Optional<List<Record>> getExitsStatisticByDayOrMonth(@Parameter(description = "ID of the parking", required = true) @PathVariable UUID id, @RequestParam(value = "dayDate", required = false) LocalDateTime dayDate, @RequestParam(value = "monthDate", required = false) LocalDateTime monthDate) {
         if (dayDate != null) {
             return statisticsManagementService.getExitsStatisticByDay(id, dayDate);
         } else if (monthDate != null) {
@@ -95,66 +141,117 @@ public class ManagerController {
         } else return Optional.empty();
     }
 
-    // Method to change the price of a subscription type
+    @Operation(summary = "Change the price of a subscription type")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Subscription type price changed successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid name or price supplied"),
+        @ApiResponse(responseCode = "404", description = "Subscription type not found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PatchMapping("/subscription/{name}")
-    public void changeSubscriptionTypePrice(@PathVariable String name, @RequestParam("newPrice") double newPrice) {
+    public void changeSubscriptionTypePrice(@Parameter(description = "Name of the subscription type", required = true) @PathVariable String name, @Parameter(description = "New price of the subscription type", required = true) @RequestParam("newPrice") double newPrice) {
         subscriptionManagementService.changeSubscriptionTypePrice(name, newPrice);
     }
 
-    // Method to create a subscription type
+    @Operation(summary = "Create a new subscription type")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Subscription type created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid name or price supplied"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PostMapping("/subscription")
-    public UUID createSubscriptionType(@RequestParam("name") String name, @RequestParam("price") double price) {
+    public UUID createSubscriptionType(@Parameter(description = "Name of the subscription type", required = true) @RequestParam("name") String name, @Parameter(description = "Price of the subscription type", required = true) @RequestParam("price") double price) {
         return subscriptionManagementService.createSubscriptionType(name, price);
     }
 
-    // Method to delete a subscription type
+    @Operation(summary = "Delete a subscription type")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Subscription type deleted successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid name supplied"),
+        @ApiResponse(responseCode = "404", description = "Subscription type not found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @DeleteMapping("/subscription/{name}")
-    public void deleteSubscriptionType(@PathVariable String name) {
+    public void deleteSubscriptionType(@Parameter(description = "Name of the subscription type to delete", required = true) @PathVariable String name) {
         subscriptionManagementService.deleteSubscriptionType(name);
     }
 
-    // Method to get all subscription types
+    @Operation(summary = "Get all subscription types")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found all subscription types"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @GetMapping("/subscriptionTypes")
     public Iterable<SubscriptionType> getAllSubscriptionTypes() {
         return subscriptionManagementService.getAllSubscriptionTypes();
     }
 
-    // Method to get all subscriptions
+    @Operation(summary = "Get all subscriptions")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found all subscriptions"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @GetMapping("/subscriptions")
     public Iterable<Subscription> getAllSubscriptions() {
         return subscriptionManagementService.getAllSubscriptions();
     }
 
-    // Method to get all plans
+    @Operation(summary = "Get all plans")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found all plans"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @GetMapping("/plans")
     public Iterable<Plan> getAllPlans() {
         return planManagementService.getAllPlans();
     }
 
-    // Method to create a plan
+    @Operation(summary = "Create a new plan")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Plan created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid name, price or plan type supplied"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PostMapping("/plan")
-    public void createPlan(@RequestParam("name") String name, @RequestParam("price") double price, @RequestParam("planType") String planType){
+    public void createPlan(@Parameter(description = "Name of the plan", required = true) @RequestParam("name") String name, @Parameter(description = "Price of the plan", required = true) @RequestParam("price") double price, @Parameter(description = "Type of the plan", required = true) @RequestParam("planType") String planType) {
         planManagementService.createPlan(name, price, planType);
     }
 
-    // Method to change plan price
+    @Operation(summary = "Change the price of a plan")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Plan price changed successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid name or price supplied"),
+        @ApiResponse(responseCode = "404", description = "Plan not found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PutMapping("/plan/{name}/price")
-    public void changePlanPrice(@PathVariable String name, @RequestParam("newPrice") double newPrice) {
+    public void changePlanPrice(@Parameter(description = "Name of the plan", required = true) @PathVariable String name, @Parameter(description = "New price of the plan", required = true) @RequestParam("newPrice") double newPrice) {
         planManagementService.changePlanPrice(name, newPrice);
     }
 
-    // Method to change plan name
+    @Operation(summary = "Change the name of a plan")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Plan name changed successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid name supplied"),
+        @ApiResponse(responseCode = "404", description = "Plan not found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PutMapping("/plan/{name}/name")
-    public void changePlanName(@PathVariable String name, @RequestParam("newName") String newName) {
+    public void changePlanName(@Parameter(description = "Current name of the plan", required = true) @PathVariable String name, @Parameter(description = "New name of the plan", required = true) @RequestParam("newName") String newName) {
         planManagementService.changePlanName(name, newName);
     }
 
-    // Method to delete a plan
+    @Operation(summary = "Delete a plan")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Plan deleted successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid name supplied"),
+        @ApiResponse(responseCode = "404", description = "Plan not found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @DeleteMapping("/plan/{name}")
-    public void deletePlan(@PathVariable String name) {
+    public void deletePlan(@Parameter(description = "Name of the plan to delete", required = true) @PathVariable String name) {
         planManagementService.deletePlan(name);
     }
-
 
     public static class ParkingCreationRequest {
         private String name;
@@ -187,7 +284,6 @@ public class ManagerController {
         public void setZipCode(String zipCode) {
             this.zipCode = zipCode;
         }
-
     }
 
     public static class ParkingUpdateRequest {

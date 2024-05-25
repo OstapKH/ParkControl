@@ -65,7 +65,11 @@ public class FullTicketByIdView extends VerticalLayout {
         TextField idField = new TextField("ID");
         idField.setValue(ticket.getId().toString());
         TextField registrationNumberField = new TextField("Registration Number");
-        registrationNumberField.setValue(ticket.getVehicle().getRegistrationNumber());
+        if (ticket.getVehicle().getRegistrationNumber() != null) {
+            registrationNumberField.setValue(ticket.getVehicle().getRegistrationNumber());
+        } else {
+            registrationNumberField.setValue("");
+        }
         TextField entryTimeField = new TextField("Entry Time");
         entryTimeField.setValue(ticket.getDateOfIssue().toString());
         idField.setReadOnly(true);

@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Service for managing parking entrance and exit operations.
+ */
 @Service
 public class ParkingEntranceAndExitManagementService {
     private final PlanService planService;
@@ -35,6 +38,16 @@ public class ParkingEntranceAndExitManagementService {
 
     private SubscriptionService subscriptionService;
 
+    /**
+     * Constructor for the ParkingEntranceAndExitManagementService.
+     *
+     * @param parkingRepository      the parking repository
+     * @param vehicleRepository      the vehicle repository
+     * @param ticketRepository       the ticket repository
+     * @param recordRepository       the record repository
+     * @param subscriptionRepository the subscription repository
+     * @param planRepository         the plan repository
+     */
     public ParkingEntranceAndExitManagementService(ParkingRepository parkingRepository, VehicleRepository vehicleRepository, TicketRepository ticketRepository, RecordRepository recordRepository, SubscriptionRepository subscriptionRepository, PlanRepository planRepository) {
         this.parkingService = new ParkingService(parkingRepository);
         this.vehicleService = new VehicleService(vehicleRepository);
@@ -45,7 +58,13 @@ public class ParkingEntranceAndExitManagementService {
     }
 
 
-    // Method to simulate a vehicle with registration number entering the parking
+    /**
+     * Method to simulate a vehicle with registration number entering the parking.
+     *
+     * @param parkingId          the parking id
+     * @param registrationNumber the registration number of the vehicle
+     * @return the ticket for the vehicle
+     */
     public Optional<Ticket> addVehicleToParking(UUID parkingId, String registrationNumber) {
         Optional<Parking> optionalParking = parkingService.getParkingById(parkingId);
         if (optionalParking.isPresent() && optionalParking.get().getCurrentAvailableNumberOfSpaces() > 0) {
@@ -81,7 +100,12 @@ public class ParkingEntranceAndExitManagementService {
         return Optional.empty();
     }
 
-    // Method to simulate a vehicle without registration number entering the parking
+    /**
+     * Method to simulate a vehicle without registration number entering the parking.
+     *
+     * @param parkingId the parking id
+     * @return the ticket for the vehicle
+     */
     public Optional<Ticket> addVehicleToParking(UUID parkingId) {
         Optional<Parking> optionalParking = parkingService.getParkingById(parkingId);
         if (optionalParking.isPresent() && optionalParking.get().getCurrentAvailableNumberOfSpaces() > 0) {
@@ -113,7 +137,13 @@ public class ParkingEntranceAndExitManagementService {
         return Optional.empty();
     }
 
-    // Method to simulate a vehicle with registration number exiting the parking
+    /**
+     * Method to simulate a vehicle with registration number exiting the parking.
+     *
+     * @param parkingId                 the parking id
+     * @param vehicleRegistrationNumber the registration number of the vehicle
+     * @return true if the exit is permitted, false otherwise
+     */
     public boolean vehicleExit(UUID parkingId, String vehicleRegistrationNumber) {
         boolean isExitPermitted = false;
         Optional<Vehicle> optionalVehicle = Optional.ofNullable(vehicleService.getVehicleByRegistrationNumber(vehicleRegistrationNumber));
@@ -122,7 +152,7 @@ public class ParkingEntranceAndExitManagementService {
             Optional<Ticket> optionalTicket = Optional.ofNullable(ticketService.getLatestTicket(vehicleId));
             if (optionalTicket.isPresent()) {
                 boolean isIdEqual = optionalTicket.get().getParking().getId().equals(parkingId);
-                if (optionalTicket.get().getDateOfPayment().equals(null)){
+                if (optionalTicket.get().getDateOfPayment().equals(null)) {
                     return isExitPermitted;
                 }
                 boolean isDateBefore = optionalTicket.get().getDateOfPayment().isBefore(LocalDateTime.now().plusMinutes(10));
@@ -141,17 +171,22 @@ public class ParkingEntranceAndExitManagementService {
         return isExitPermitted;
     }
 
-    // Method to simulate a vehicle with ticket exiting the parking
+    /**
+     * Method to simulate a vehicle with ticket exiting the parking.
+     *
+     * @param parkingId the parking id
+     * @param ticketId  the ticket id
+     * @return true if the exit is permitted, false otherwise
+     */
     public boolean vehicleExit(UUID parkingId, UUID ticketId) {
         boolean isExitPermitted = false;
         Ticket ticket = ticketService.getTicket(ticketId);
         if (ticket != null) {
-            if (ticket.getDateOfPayment() == null){
+            if (ticket.getDateOfPayment() == null) {
                 return isExitPermitted;
             }
             boolean isDateBefore = ticket.getDateOfPayment().isBefore(LocalDateTime.now().plusMinutes(10));
-            if (ticket.getParking().getId().equals(parkingId) && isDateBefore)
-            {
+            if (ticket.getParking().getId().equals(parkingId) && isDateBefore) {
                 isExitPermitted = true;
                 removeVehicleFromParking(parkingId, ticket.getVehicle().getId());
                 return isExitPermitted;

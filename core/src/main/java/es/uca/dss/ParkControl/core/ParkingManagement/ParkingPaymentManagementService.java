@@ -16,8 +16,10 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
+/**
+ * Service for managing parking payment operations.
+ */
 @Service
-
 public class ParkingPaymentManagementService {
     private SubscriptionService subscriptionService;
 
@@ -25,13 +27,24 @@ public class ParkingPaymentManagementService {
 
     private TicketService ticketService;
 
+    /**
+     * Constructor for the ParkingPaymentManagementService.
+     *
+     * @param subscriptionRepository the subscription repository
+     * @param transactionRepository  the transaction repository
+     * @param ticketRepository       the ticket repository
+     */
     public ParkingPaymentManagementService(SubscriptionRepository subscriptionRepository, TransactionRepository transactionRepository, TicketRepository ticketRepository) {
         this.subscriptionService = new SubscriptionService(subscriptionRepository);
         this.transactionService = new TransactionService(transactionRepository);
         this.ticketService = new TicketService(ticketRepository);
     }
 
-    // Method to simulate payment of a subscription by card
+    /**
+     * Method to simulate payment of a subscription by card.
+     *
+     * @param subscriptionId the id of the subscription
+     */
     public void paymentOfSubscriptionByCard(UUID subscriptionId) {
         Subscription subscription = subscriptionService.getSubscription(subscriptionId);
         Transaction transaction = new Transaction();
@@ -45,7 +58,13 @@ public class ParkingPaymentManagementService {
         subscriptionService.createSubscription(subscription);
     }
 
-    // Method to simulate payment of a subscription by cash
+    /**
+     * Method to simulate payment of a subscription by cash.
+     *
+     * @param subscriptionId the id of the subscription
+     * @param amount         the amount of cash given
+     * @return the change returned
+     */
     public double paymentOfSubscriptionByCash(UUID subscriptionId, double amount) {
         Subscription subscription = subscriptionService.getSubscription(subscriptionId);
         double subscriptionPrice = subscription.getSubscriptionType().getPrice();
@@ -65,7 +84,11 @@ public class ParkingPaymentManagementService {
         return amount - subscriptionPrice;
     }
 
-    // Method that simulates payment by card
+    /**
+     * Method that simulates payment by card.
+     *
+     * @param ticketId the id of the ticket
+     */
     public void paymentOfTicketByCard(UUID ticketId) {
         Ticket ticket = ticketService.getTicket(ticketId);
         Transaction transaction = new Transaction();
@@ -79,7 +102,13 @@ public class ParkingPaymentManagementService {
         transactionService.createTransaction(transaction);
     }
 
-    // Method that simulates payment by cash
+    /**
+     * Method that simulates payment by cash.
+     *
+     * @param ticketId the id of the ticket
+     * @param amount   the amount of cash given
+     * @return the change returned
+     */
     public double paymentOfTicketByCash(UUID ticketId, double amount) {
         Ticket ticket = ticketService.getTicket(ticketId);
         double ticketPrice = getTicketPrice(ticketId);
@@ -99,6 +128,12 @@ public class ParkingPaymentManagementService {
         return amount - ticketPrice;
     }
 
+    /**
+     * Method to get the price of a ticket.
+     *
+     * @param ticketId the id of the ticket
+     * @return the price of the ticket
+     */
     public double getTicketPrice(UUID ticketId) {
         Ticket ticket = ticketService.getTicket(ticketId);
         // Based on the time the vehicle has been parked, we set the plan type
@@ -120,7 +155,12 @@ public class ParkingPaymentManagementService {
         } else return minutes * ticketPlanPrice;
     }
 
-    // Method to calculate the plan type of a ticket
+    /**
+     * Method to calculate the plan type of a ticket.
+     *
+     * @param ticket the ticket
+     * @return the plan type of the ticket
+     */
     private PlanType calculateTicketPlanType(Ticket ticket) {
         LocalDateTime dateOfEntry = ticket.getDateOfIssue();
         LocalDateTime tempDateTime = LocalDateTime.from(dateOfEntry);

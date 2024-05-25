@@ -16,18 +16,32 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
+/**
+ * Service for managing parking tickets.
+ */
 @Service
 public class ParkingTicketManagementService {
 
     private PlanService planService;
     private TicketService ticketService;
 
+    /**
+     * Constructor for the ParkingTicketManagementService.
+     *
+     * @param ticketRepository the ticket repository
+     * @param planRepository   the plan repository
+     */
     public ParkingTicketManagementService(TicketRepository ticketRepository, PlanRepository planRepository) {
         this.ticketService = new TicketService(ticketRepository);
         this.planService = new PlanService(planRepository);
     }
 
-    // Method to get the price of a ticket
+    /**
+     * Method to get the price of a ticket.
+     *
+     * @param ticketId the id of the ticket
+     * @return the price of the ticket
+     */
     public double getTicketPrice(UUID ticketId) {
         Ticket ticket = ticketService.getTicket(ticketId);
         // Based on the time the vehicle has been parked, we set the plan type
@@ -52,17 +66,34 @@ public class ParkingTicketManagementService {
         } else return minutes * ticketPlanPrice;
     }
 
-    // Method to change the plan of a ticket
+    /**
+     * Method to change the plan of a ticket.
+     *
+     * @param ticketId the id of the ticket
+     * @param newPlan  the new plan for the ticket
+     */
     public void changeTicketPlan(UUID ticketId, Plan newPlan) {
         Ticket ticket = ticketService.getTicket(ticketId);
         ticket.setPlan(newPlan);
     }
 
+    /**
+     * Method to get the QR code of a ticket.
+     *
+     * @param ticketId the id of the ticket
+     * @return the QR code of the ticket
+     * @throws Exception if an error occurs while generating the QR code
+     */
     public ByteArrayOutputStream getTicketQRCode(UUID ticketId) throws Exception {
         return QRCodeGenerator.generateQRCodeByteOutput(ticketId);
     }
 
-    // Method to calculate the plan type of a ticket
+    /**
+     * Method to calculate the plan type of a ticket.
+     *
+     * @param ticket the ticket
+     * @return the plan type of the ticket
+     */
     private PlanType calculateTicketPlanType(Ticket ticket) {
         LocalDateTime dateOfEntry = ticket.getDateOfIssue();
         LocalDateTime tempDateTime = LocalDateTime.from(dateOfEntry);
@@ -78,6 +109,12 @@ public class ParkingTicketManagementService {
         } else return PlanType.MINUTES;
     }
 
+    /**
+     * Method to get a ticket by id.
+     *
+     * @param ticketId the id of the ticket
+     * @return the ticket
+     */
     public Ticket getTicketById(UUID ticketId) {
         return ticketService.getTicket(ticketId);
     }
