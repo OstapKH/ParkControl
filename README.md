@@ -1,4 +1,4 @@
-# dss2023-2024-ParkControl
+ParkControl
 ##   
 Repositorio del Proyecto ParkControl, de la asignatura DSS
 
